@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>POS System Planning Survey</title>
+<title>POS System Planning Questionnaire</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -29,7 +29,7 @@ header{display:flex;flex-direction:column;gap:10px;border-bottom:2px solid var(-
 .toprow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 h1{font-family:var(--f-display);font-size:1.75rem;line-height:1.25;margin:0;text-wrap:balance}
-.lead{margin:0;color:var(--muted);max-width:62ch}
+.lead{white-space:pre-line;margin:0;color:var(--muted);max-width:62ch}
 .lang{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
 .lang button{border:0;border-radius:0;padding:6px 12px;background:var(--surface)}
 .lang button[aria-pressed=true]{background:var(--accent);color:var(--surface)}
@@ -100,8 +100,8 @@ const ONLINE = !!(CONFIG.supabase.url && CONFIG.supabase.anonKey);
 
 const T = {
   en:{eyebrow:"Auckland · POS system planning",
-      title:"POS System Planning Survey",
-      lead:`Thank you for bringing me the idea of building a new POS system, and for choosing me as your partner. I agree it is a promising business opportunity. We have already discussed the project; to plan it in more detail, I would like to learn more about what you see first-hand: what your clients use today and what they still need, how hardware and payments should be set up, and how we share installation, support and referrals. The more specific, the better: brands, numbers, prices and recurring issues. It takes about 20–30 minutes; skip anything you are unsure of or would rather discuss in person.`,
+      title:"POS System Planning Questionnaire",
+      lead:`Hi Luis,\n\nWhen we last worked together on an installation, you shared your vision for your own POS system, with AI customer support to improve service efficiency and Facebook advertising and other online marketing channels to attract more customers and improve overall profitability. You also suggested that we work on the system together, drawing on my software development experience. I think this direction has real potential and offers a promising business opportunity. I have put together this survey to draw on your first-hand experience, help me clarify the product priorities, and help us work out how to collaborate and turn the idea into a practical plan. Please allow around 20–30 minutes. Estimates and examples are welcome, and you can skip anything you are unsure about or would prefer to discuss in person.`,
       progress:(a,b)=>`${a} of ${b} questions answered`,
       optional:"optional",
       about:"Your details",
@@ -123,10 +123,10 @@ const T = {
       copied:"Copied. Paste them into an email to me.", copyFail:"Copy failed. Use Download instead.",
       draft:"Your answers are saved in this browser until you submit.",
       doneTitle:"Thank you", doneBody:"I will go through your answers and come back to you with next steps for working together.",
-      footer:`POS system planning survey · Questions: ${CONFIG.contactEmail}`},
+      footer:`POS system planning questionnaire · Questions: ${CONFIG.contactEmail}`},
   zh:{eyebrow:"奥克兰 · POS系统规划",
-      title:"POS系统规划调查",
-      lead:`感谢您提出开发新POS（点餐收银）系统的创业想法，也感谢您选择我作为合作伙伴。我同样认为这是一个很有前景的商机。前期我们已经就这个项目做过交流，为了把系统规划得更细，我想进一步了解您掌握的一线情况：您的客户目前在用什么、还需要什么，硬件和支付如何配置，以及安装、售后和转介绍怎样分工。回答越具体越好，比如品牌、数量、价格和常见问题。填写约需20–30分钟，不确定或想当面细谈的问题可以先跳过。`,
+      title:"POS系统规划问卷",
+      lead:`Luis 您好，\n\n上次一起做安装时，您提到，希望打造自己的POS（点餐收银）系统，并通过AI智能客服提升服务效率、借助Facebook广告等网络营销方式拓展客户，从而提高整体盈利能力，也希望发挥我的软件开发经验，一起把这个想法做起来。我觉得这个方向很有潜力，也有不错的商业前景。为了进一步明确产品重点和合作方式，我整理了这份问卷，希望结合您的一线经验，把接下来的计划做得更具体。填写约需20–30分钟，欢迎提供大致数据或实际案例；不确定或希望当面讨论的问题，可以先跳过。`,
       progress:(a,b)=>`已回答 ${a} / ${b} 题`,
       optional:"选填",
       about:"您的信息",
@@ -148,7 +148,7 @@ const T = {
       copied:"已复制，请粘贴到邮件发给我。", copyFail:"复制失败，请使用下载。",
       draft:"提交前，您的回答会保存在本浏览器中。",
       doneTitle:"谢谢", doneBody:"我会仔细阅读您的回答，并就下一步合作安排与您联系。",
-      footer:`POS系统规划调查 · 联系：${CONFIG.contactEmail}`}
+      footer:`POS系统规划问卷 · 联系：${CONFIG.contactEmail}`}
 };
 
 /* Partner-facing questions. Internal notes, our price points and post-interview analysis are intentionally left out. */
@@ -187,8 +187,8 @@ const SECTIONS = [
   {id:"q26",en:"I plan to offer the system as a rental covering both hardware and software, similar to current business rentals. Do your clients prefer renting or buying outright, and what would make them choose my rental over their current one?",zh:"我计划以租用方式提供（含硬件和软件），与现有business rental类似。您的客户更倾向租用还是一次性买断？什么能让他们选择我的租用方案而不是现在的？"},
   {id:"q27",en:"What would you need from me to install and recommend the system with confidence (training, documentation, test units, a direct support line)?",zh:"要放心地安装和推荐这套系统，您需要我提供什么（培训、资料、测试机、直接的技术支持渠道）？"}]},
  {id:"s8",en:"How we work together",zh:"合作方式",qs:[
-  {id:"q28",en:"Which parts would you like to take on: installation, first-line support, hardware supply, referrals? What fees per install or per month would suit you?",zh:"您希望承担哪些部分：安装、一线售后、硬件供货、转介绍？按次或按月怎样收费适合您？"},
-  {id:"q29",en:"For referrals or resale, what arrangement would work for you (one-off fee, share of the monthly fee, other)?",zh:"转介绍或代理，您希望怎样安排（一次性费用、月费分成、其他）？"},
+  {id:"q28",en:"Which parts would you like to take on: installation, first-line support, hardware supply, referrals? What fees per install or per month would suit you?",zh:"您希望承担哪些部分：安装、一线售后、硬件供货、客户推荐？按次或按月怎样收费适合您？"},
+  {id:"q29",en:"For referrals or resale, what arrangement would work for you (one-off fee, share of the monthly fee, other)?",zh:"客户推荐或代理，您希望怎样安排（一次性费用、月费分成、其他）？"},
   {id:"q30",en:"Which of your clients could join a free pilot, and how should we approach them together?",zh:"您的哪些客户适合参加免费试点？我们应如何一起去沟通？"},
   {id:"q31",en:"How should we communicate day to day (contact person, channel, regular check-ins), and is there anything else I should know?",zh:"日常怎样沟通更好（对接人、渠道、定期碰头）？还有什么需要我了解的？"}]}
 ];
