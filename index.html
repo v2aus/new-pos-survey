@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Retail Tech Partner Survey</title>
+<title>Partner Planning Questionnaire</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -99,22 +99,22 @@ const CONFIG = {
 const ONLINE = !!(CONFIG.supabase.url && CONFIG.supabase.anonKey);
 
 const T = {
-  en:{eyebrow:"Auckland · retail & hospitality technology",
-      title:"Retail Tech Partner Survey",
-      lead:`We are ${CONFIG.brand.en} building a point-of-sale system for Asian bubble tea and quick-service food shops in Auckland. As a local installer you see far more stores than we can. Your view helps us understand what shops use today and what they need. About 20–30 minutes; skip anything you prefer not to answer.`,
+  en:{eyebrow:"Auckland · partner planning",
+      title:"Partner Planning Questionnaire",
+      lead:`Thank you for working with us. We are building a point-of-sale system for Asian bubble tea and quick-service food shops in Auckland, and your experience installing and supporting stores is central to getting it right. This questionnaire helps us plan together: what your clients use and need today, how the product should fit your installs, and how we split installation, support and referrals. About 20–30 minutes; skip anything you would rather discuss in person.`,
       progress:(a,b)=>`${a} of ${b} questions answered`,
       optional:"optional",
-      about:"About you",
+      about:"Your details",
       fields:{company:"Company name",website:"Website",name:"Your name",role:"Your role",email:"Email",phone:"Phone"},
       privacyTitle:"How we use your answers",
       privacy:[
-        `Your answers are used only for our market research and to follow up with you if you agree. We do not sell them or publish them with your name.`,
+        `Your answers are used only to plan the product and our cooperation, and to follow up with you if you agree. We do not sell them or publish them with your name.`,
         "Please do not include your customers' personal information or confidential contract documents.",
         ...(ONLINE?[CONFIG.providerNote.en]:[]),
         CONFIG.retentionNote.en,
         `You can ask to see, correct or delete your answers at ${CONFIG.contactEmail}.`],
-      consent:"I agree to these terms and to sharing my answers with the research team.",
-      contactOk:"You may contact me about follow-up questions or a possible partnership.",
+      consent:"I agree to these terms and to sharing my answers with the product team.",
+      contactOk:"You may contact me to follow up on these answers and our working arrangements.",
       submit:"Submit answers", download:"Download answers", copy:"Copy answers",
       noBackend:`After finishing, download or copy your answers and email them to ${CONFIG.contactEmail}.`,
       needConsent:"Please tick the agreement box first.", needCompany:"Please enter your company name.",
@@ -122,24 +122,24 @@ const T = {
       sendFail:"Sending failed. Please download your answers and email them to us instead.",
       copied:"Copied. Paste them into an email to us.", copyFail:"Copy failed. Use Download instead.",
       draft:"Your answers are saved in this browser until you submit.",
-      doneTitle:"Thank you", doneBody:"We appreciate your time and will be in touch if you asked us to.",
-      footer:`Auckland POS market research · Questions: ${CONFIG.contactEmail}`},
-  zh:{eyebrow:"奥克兰 · 零售与餐饮技术",
-      title:"零售技术服务商调查",
-      lead:`我们是${CONFIG.brand.zh}，正在开发一款面向奥克兰亚洲奶茶店和快餐店的收银系统。作为本地安装服务商，您接触的门店比我们多得多，您的看法能帮助我们了解门店现在用什么、还需要什么。约20–30分钟，不想回答的问题可以跳过。`,
+      doneTitle:"Thank you", doneBody:"We will go through your answers and come back to you with next steps for working together.",
+      footer:`Partner planning · Questions: ${CONFIG.contactEmail}`},
+  zh:{eyebrow:"奥克兰 · 合作规划",
+      title:"合作伙伴规划问卷",
+      lead:`感谢您与我们合作。我们正在开发一款面向奥克兰亚洲奶茶店和快餐店的收银系统，您在门店安装和售后上的经验，是把产品做对的关键。这份问卷用于我们共同规划：您的客户现在用什么、还缺什么，产品怎样配合您的安装工作，以及安装、售后和转介绍如何分工。约20–30分钟，想当面细谈的问题可以先跳过。`,
       progress:(a,b)=>`已回答 ${a} / ${b} 题`,
       optional:"选填",
-      about:"基本信息",
+      about:"您的信息",
       fields:{company:"公司名称",website:"官网",name:"您的姓名",role:"您的职位",email:"邮箱",phone:"电话"},
       privacyTitle:"我们如何使用您的回答",
       privacy:[
-        `您的回答只用于我们的市场调研，以及在您同意时与您后续联系。我们不会出售，也不会署名公开。`,
+        `您的回答只用于产品与合作规划，以及在您同意时与您后续联系。我们不会出售，也不会署名公开。`,
         "请不要填写您客户的个人信息或保密合同内容。",
         ...(ONLINE?[CONFIG.providerNote.zh]:[]),
         CONFIG.retentionNote.zh,
         `如需查看、更正或删除您的回答，请联系 ${CONFIG.contactEmail}。`],
-      consent:"我同意以上说明，并同意将回答提供给调研团队。",
-      contactOk:"可以就后续问题或合作可能与我联系。",
+      consent:"我同意以上说明，并同意将回答提供给产品团队。",
+      contactOk:"可以就这些回答和合作安排与我联系。",
       submit:"提交答卷", download:"下载答卷", copy:"复制答卷",
       noBackend:`填写完成后，请下载或复制答卷，发送到 ${CONFIG.contactEmail}。`,
       needConsent:"请先勾选同意。", needCompany:"请填写公司名称。",
@@ -147,54 +147,54 @@ const T = {
       sendFail:"提交失败。请下载答卷并通过邮件发给我们。",
       copied:"已复制，请粘贴到邮件发给我们。", copyFail:"复制失败，请使用下载。",
       draft:"提交前，您的回答会保存在本浏览器中。",
-      doneTitle:"谢谢", doneBody:"感谢您抽出时间。如您同意，我们会与您联系。",
-      footer:`奥克兰收银系统市场调研 · 联系：${CONFIG.contactEmail}`}
+      doneTitle:"谢谢", doneBody:"我们会仔细阅读您的回答，并就下一步合作安排与您联系。",
+      footer:`合作规划问卷 · 联系：${CONFIG.contactEmail}`}
 };
 
-/* Outward-facing questions. Internal notes, price points and post-interview analysis are intentionally left out. */
+/* Partner-facing questions. Internal notes, our price points and post-interview analysis are intentionally left out. */
 const SECTIONS = [
- {id:"s1",en:"Your business",zh:"业务概况",qs:[
-  {id:"q1",en:"How long has the business been running, how many technicians do you have, and which areas do you cover?",zh:"公司成立多久、有几位技术人员、服务哪些区域？"},
-  {id:"q2",en:"Roughly how many client stores do you support, and how many new installs per year?",zh:"大约服务多少家门店？每年新装多少家？"},
+ {id:"s1",en:"Your business and clients",zh:"贵公司与客户",qs:[
+  {id:"q1",en:"How many technicians do you have, and which areas of Auckland (or beyond) do you cover?",zh:"贵公司有几位技术人员？覆盖奥克兰哪些区域（或奥克兰以外）？"},
+  {id:"q2",en:"Roughly how many client stores do you support, and how many new installs do you do per year?",zh:"大约服务多少家门店？每年新装多少家？"},
   {id:"q3",en:"What is the rough mix of your clients: supermarkets, convenience, restaurants, cafés, bubble tea, Asian quick-service, other?",zh:"客户业态大致比例：超市、便利店、餐厅、咖啡馆、奶茶、亚洲快餐、其他？"},
-  {id:"q4",en:"Roughly what share of your clients are Asian-owned, and which languages do they prefer?",zh:"亚洲业主客户大约占多少？他们习惯用什么语言沟通？"}]},
- {id:"s2",en:"POS systems in the market",zh:"POS系统",qs:[
-  {id:"q5",en:"Which POS systems do you sell or install, and roughly how many sites run each?",zh:"您销售或安装哪些POS？各自大约多少家在用？"},
-  {id:"q6",en:"Which POS systems do food and drink shops (especially bubble tea and Asian quick-service) use most in Auckland?",zh:"奥克兰餐饮店（尤其奶茶和亚洲快餐）最常用哪些POS？"},
-  {id:"q7",en:"What do shops typically pay per month for POS software, and are there extra module or setup fees?",zh:"门店POS软件通常每月付多少？有没有额外的模块费或安装费？"},
-  {id:"q8",en:"What matters most to shops when choosing a POS, and why do they switch?",zh:"门店选POS最看重什么？通常因为什么换系统？"},
-  {id:"q9",en:"What are the most common complaints or faults you see with current systems?",zh:"现有系统最常见的投诉或故障是什么？"}]},
- {id:"s3",en:"Hardware",zh:"硬件",qs:[
-  {id:"q10",en:"What share of counters use Android all-in-one terminals, iPads, or Windows touchscreens?",zh:"收银台用安卓一体机、iPad、Windows触摸屏的大致比例？"},
-  {id:"q11",en:"Which terminal brands (e.g. iMin, Sunmi, Elo, Posiflex) do you rate for quality and after-sales support?",zh:"哪些一体机品牌（如iMin、商米、Elo、Posiflex）质量和售后较好？"},
-  {id:"q12",en:"What are typical retail price ranges for a terminal, kitchen printer, label printer and cash drawer?",zh:"一体机、厨房打印机、标签机、钱箱的常见零售价区间？"},
-  {id:"q13",en:"Which parts fail most often, and how are warranty and replacement usually handled?",zh:"最常坏的部件是什么？保修和换机通常怎么处理？"},
-  {id:"q14",en:"For cup or item labels, which printers and label sizes work well in practice?",zh:"杯贴或商品标签，实际好用的打印机和标签尺寸是什么？"}]},
+  {id:"q4",en:"Roughly what share of your clients are Asian-owned, and which languages do they prefer for training and support?",zh:"亚洲业主客户大约占多少？培训和售后时他们习惯用什么语言？"}]},
+ {id:"s2",en:"What your clients use today",zh:"客户现在用的POS",qs:[
+  {id:"q5",en:"Which POS systems do you currently install or support, and roughly how many sites run each?",zh:"您目前安装或维护哪些POS？各自大约多少家在用？"},
+  {id:"q6",en:"Which POS systems do food and drink shops (especially bubble tea and Asian quick-service) use most among your clients?",zh:"您的餐饮客户（尤其奶茶和亚洲快餐）最常用哪些POS？"},
+  {id:"q7",en:"What do these shops typically pay per month for POS software, and what extra module or setup fees come up?",zh:"这些门店POS软件通常每月付多少？常见的额外模块费或安装费有哪些？"},
+  {id:"q8",en:"What makes your clients choose or switch POS systems?",zh:"您的客户选择或更换POS，最主要的原因是什么？"},
+  {id:"q9",en:"Which problems with current systems take up most of your support time?",zh:"现有系统哪些问题最占用您的售后时间？"}]},
+ {id:"s3",en:"Hardware and supply",zh:"硬件与供货",qs:[
+  {id:"q10",en:"What share of your clients' counters use Android all-in-one terminals, iPads, or Windows touchscreens?",zh:"您客户的收银台用安卓一体机、iPad、Windows触摸屏的大致比例？"},
+  {id:"q11",en:"Which terminal brands (e.g. iMin, Sunmi, Elo, Posiflex) do you prefer to install, and why?",zh:"您更愿意安装哪些一体机品牌（如iMin、商米、Elo、Posiflex）？为什么？"},
+  {id:"q12",en:"Could you supply terminals, kitchen printers, label printers and cash drawers for our pilot stores? What lead time and typical prices should we plan for?",zh:"能否为我们的试点门店供应一体机、厨房打印机、标签机和钱箱？我们应按怎样的到货时间和价格来规划？"},
+  {id:"q13",en:"Which parts fail most often, and how do you handle warranty, swaps and spare units today?",zh:"最常坏的部件是什么？您现在如何处理保修、换机和备用机？"},
+  {id:"q14",en:"For cup and item labels, which printers and label sizes work well in your installs?",zh:"杯贴和商品标签，在您的安装经验里哪些打印机和标签尺寸好用？"}]},
  {id:"s4",en:"Payment terminals",zh:"支付终端",qs:[
-  {id:"q15",en:"Which payment providers and terminals do your clients use (Windcave, Worldline, Verifone, Smartpay, other)?",zh:"客户用哪些支付服务商和终端（Windcave、Worldline、Verifone、Smartpay等）？"},
-  {id:"q16",en:"Roughly what share have card payments integrated with the POS, and why don't the others?",zh:"大约多少客户的刷卡与POS集成？没集成的原因是什么？"},
-  {id:"q17",en:"What issues come up most when setting up integrated payments?",zh:"安装集成支付时最常遇到什么问题？"}]},
- {id:"s5",en:"Installation, network and support",zh:"安装、网络与支持",qs:[
-  {id:"q18",en:"What does a typical POS installation involve, how long does it take, and who loads the menu?",zh:"一次典型的POS安装包括什么、需要多久、菜单由谁录入？"},
-  {id:"q19",en:"How often do store networks drop out, and what do you recommend as a backup?",zh:"门店网络多久断一次？您推荐什么备份方案？"},
-  {id:"q20",en:"What are the top reasons shops call you for help?",zh:"门店最常因为什么找您求助？"},
+  {id:"q15",en:"Which payment providers and terminals do your clients use (Windcave, Worldline, Verifone, Smartpay, other)?",zh:"您的客户用哪些支付服务商和终端（Windcave、Worldline、Verifone、Smartpay等）？"},
+  {id:"q16",en:"Roughly what share have card payments integrated with the POS, and what stops the others?",zh:"大约多少客户的刷卡与POS集成？其余没集成的原因是什么？"},
+  {id:"q17",en:"When you set up integrated payments, what goes wrong most often, and who do you contact at the payment provider?",zh:"安装集成支付时最常出什么问题？您在支付服务商那边一般找谁对接？"}]},
+ {id:"s5",en:"Installation and support",zh:"安装与售后",qs:[
+  {id:"q18",en:"Walk us through a typical install: steps, time on site, and who loads the menu.",zh:"请介绍一次典型的安装：步骤、现场时长、菜单由谁录入。"},
+  {id:"q19",en:"How often do store networks drop out, and what backup do you usually set up?",zh:"门店网络多久断一次？您通常配置什么备份方案？"},
+  {id:"q20",en:"What are the top reasons shops call you, and what are your usual response times on weekdays, evenings and weekends?",zh:"门店最常因为什么找您？工作日、晚上和周末通常多久响应？"},
   {id:"q21",en:"Which printer connection (network, USB, Bluetooth) is most reliable in your experience?",zh:"您觉得哪种打印机连接方式（网口、USB、蓝牙）最稳定？"}]},
- {id:"s6",en:"Shelf labels, CCTV and bundles",zh:"电子价签、CCTV与打包服务",qs:[
-  {id:"q22",en:"Do food and drink shops ask for electronic shelf labels, digital menu boards or CCTV linked to the POS?",zh:"餐饮店是否需要电子价签、数字菜单屏或与POS联动的CCTV？"},
-  {id:"q23",en:"Do shops prefer one provider for POS, network and CCTV together?",zh:"门店是否偏好由一家服务商同时负责POS、网络和CCTV？"}]},
- {id:"s7",en:"Your view on a new POS",zh:"对新收银系统的看法",qs:[
+ {id:"s6",en:"Bundled services",zh:"打包服务",qs:[
+  {id:"q22",en:"Which of your other services (network, CCTV, digital menu boards, electronic shelf labels) do food and drink shops ask for alongside a POS?",zh:"餐饮店在装POS时，还常会一起要您的哪些服务（网络、CCTV、数字菜单屏、电子价签）？"},
+  {id:"q23",en:"Would you like to offer our POS as part of a bundle with your services? How would you package it?",zh:"是否希望把我们的收银系统和您的服务打包提供？您会怎样组合？"}]},
+ {id:"s7",en:"Product feedback",zh:"产品方向反馈",qs:[
   {id:"q24",en:"What do bubble tea and Asian quick-service shops most need that current systems don't do well?",zh:"奶茶和亚洲快餐店最需要、但现有系统做得不好的是什么？"},
   {id:"q25",en:"How useful would these be to your clients: integrated card payments on Android terminals, one label per cup, bilingual Chinese/English, local on-site support?",zh:"以下对您的客户有多大用处：安卓一体机集成刷卡、每杯一张杯贴、中英双语、本地上门支持？"},
-  {id:"q26",en:"What monthly price range do small food shops accept for POS software?",zh:"小型餐饮店通常能接受的POS软件月费区间？"},
-  {id:"q27",en:"What would make you hesitant to recommend a new POS brand?",zh:"推荐一个新的POS品牌，您最大的顾虑是什么？"}]},
- {id:"s8",en:"Working together",zh:"合作可能",qs:[
-  {id:"q28",en:"Would you be interested in installation or support work for a new POS? What would you charge per install or per month?",zh:"是否有兴趣承接新POS的安装或售后？按次或按月如何收费？"},
-  {id:"q29",en:"Would you consider referring clients or reselling? What arrangement would suit you?",zh:"是否考虑转介绍或代理？什么合作方式适合您？"},
-  {id:"q30",en:"Could you suggest shops that might try a new system in a free pilot?",zh:"能否推荐愿意免费试用新系统的门店？"},
-  {id:"q31",en:"Anything else you'd like to tell us?",zh:"还有什么想告诉我们的？"}]}
+  {id:"q26",en:"What monthly price range do you think small food shops will accept for POS software?",zh:"您认为小型餐饮店能接受的POS软件月费区间是多少？"},
+  {id:"q27",en:"What would you need from us to install and recommend the system with confidence (training, documentation, test units, a direct support line)?",zh:"要放心地安装和推荐这套系统，您需要我们提供什么（培训、资料、测试机、直接的技术支持渠道）？"}]},
+ {id:"s8",en:"How we work together",zh:"合作方式",qs:[
+  {id:"q28",en:"Which parts would you like to take on: installation, first-line support, hardware supply, referrals? What fees per install or per month would suit you?",zh:"您希望承担哪些部分：安装、一线售后、硬件供货、转介绍？按次或按月怎样收费适合您？"},
+  {id:"q29",en:"For referrals or resale, what arrangement would work for you (one-off fee, share of the monthly fee, other)?",zh:"转介绍或代理，您希望怎样安排（一次性费用、月费分成、其他）？"},
+  {id:"q30",en:"Which of your clients could join a free pilot, and how should we approach them together?",zh:"您的哪些客户适合参加免费试点？我们应如何一起去沟通？"},
+  {id:"q31",en:"How should we communicate day to day (contact person, channel, regular check-ins), and is there anything else we should know?",zh:"日常怎样沟通更好（对接人、渠道、定期碰头）？还有什么需要我们了解的？"}]}
 ];
 
-const KEY="retail-tech-survey-draft-v1";
+const KEY="retail-tech-survey-draft-v2";
 const $=s=>document.querySelector(s);
 let lang=(navigator.language||"").toLowerCase().startsWith("zh")?"zh":"en";
 let state={meta:{},answers:{},consent:false,contactOk:false};
