@@ -92,8 +92,8 @@ const CONFIG = {
   // The publishable (anon) key is public by design; never put the secret key here. the table's row-level security only allows inserts.
   supabase: { url: "https://lqhdboipglxyfoqixsmz.supabase.co", anonKey: "sb_publishable_qlSD12af6YfPjdT7wale3Q_-iOJQYfB", table: "survey_responses" },
   // Shown in the privacy notice when online submission is on.
-  providerNote: { en: "Submitted answers are stored in our database hosted by Supabase.", zh: "在线提交的答卷保存在我们的数据库中，由 Supabase 托管。" },
-  retentionNote: { en: "We keep responses for up to 24 months, then delete them.", zh: "答卷最长保存24个月，之后删除。" }
+  providerNote: { en: "Submitted answers are stored in my database hosted by Supabase.", zh: "在线提交的答卷保存在我的数据库中，由 Supabase 托管。" },
+  retentionNote: { en: "I keep responses for up to 24 months, then delete them.", zh: "答卷最长保存24个月，之后删除。" }
 };
 /* ================================================= */
 const ONLINE = !!(CONFIG.supabase.url && CONFIG.supabase.anonKey);
@@ -106,9 +106,9 @@ const T = {
       optional:"optional",
       about:"Your details",
       fields:{company:"Company name",website:"Website",name:"Your name",role:"Your role",email:"Email",phone:"Phone"},
-      privacyTitle:"How we use your answers",
+      privacyTitle:"How I use your answers",
       privacy:[
-        `Your answers are used only for planning our POS system and our cooperation. We do not sell them or publish them.`,
+        `Your answers are used only for planning my POS system and our cooperation. I do not sell them or publish them.`,
         "Please do not include your customers' personal information or confidential contract documents.",
         ...(ONLINE?[CONFIG.providerNote.en]:[]),
         CONFIG.retentionNote.en,
@@ -119,10 +119,10 @@ const T = {
       noBackend:`After finishing, download or copy your answers and email them to ${CONFIG.contactEmail}.`,
       needConsent:"Please tick the agreement box first.", needCompany:"Please enter your company name.",
       sending:"Sending…", sent:"Thank you. Your answers have been received.",
-      sendFail:"Sending failed. Please download your answers and email them to us instead.",
-      copied:"Copied. Paste them into an email to us.", copyFail:"Copy failed. Use Download instead.",
+      sendFail:"Sending failed. Please download your answers and email them to me instead.",
+      copied:"Copied. Paste them into an email to me.", copyFail:"Copy failed. Use Download instead.",
       draft:"Your answers are saved in this browser until you submit.",
-      doneTitle:"Thank you", doneBody:"We will go through your answers and come back to you with next steps for working together.",
+      doneTitle:"Thank you", doneBody:"I will go through your answers and come back to you with next steps for working together.",
       footer:`POS system planning survey · Questions: ${CONFIG.contactEmail}`},
   zh:{eyebrow:"奥克兰 · 收银系统规划",
       title:"POS系统规划调查",
@@ -131,9 +131,9 @@ const T = {
       optional:"选填",
       about:"您的信息",
       fields:{company:"公司名称",website:"官网",name:"您的姓名",role:"您的职位",email:"邮箱",phone:"电话"},
-      privacyTitle:"我们如何使用您的回答",
+      privacyTitle:"我如何使用您的回答",
       privacy:[
-        `您的回答只用于我们的收银系统规划与合作安排。我们不会出售，也不会公开。`,
+        `您的回答只用于我的收银系统规划与合作安排。我不会出售，也不会公开。`,
         "请不要填写您客户的个人信息或保密合同内容。",
         ...(ONLINE?[CONFIG.providerNote.zh]:[]),
         CONFIG.retentionNote.zh,
@@ -143,11 +143,11 @@ const T = {
       submit:"提交答卷", download:"下载答卷", copy:"复制答卷",
       noBackend:`填写完成后，请下载或复制答卷，发送到 ${CONFIG.contactEmail}。`,
       needConsent:"请先勾选同意。", needCompany:"请填写公司名称。",
-      sending:"正在提交…", sent:"谢谢，我们已收到您的回答。",
-      sendFail:"提交失败。请下载答卷并通过邮件发给我们。",
-      copied:"已复制，请粘贴到邮件发给我们。", copyFail:"复制失败，请使用下载。",
+      sending:"正在提交…", sent:"谢谢，我已收到您的回答。",
+      sendFail:"提交失败。请下载答卷并通过邮件发给我。",
+      copied:"已复制，请粘贴到邮件发给我。", copyFail:"复制失败，请使用下载。",
       draft:"提交前，您的回答会保存在本浏览器中。",
-      doneTitle:"谢谢", doneBody:"我们会仔细阅读您的回答，并就下一步合作安排与您联系。",
+      doneTitle:"谢谢", doneBody:"我会仔细阅读您的回答，并就下一步合作安排与您联系。",
       footer:`POS系统规划调查 · 联系：${CONFIG.contactEmail}`}
 };
 
@@ -159,13 +159,13 @@ const SECTIONS = [
  {id:"s2",en:"What your clients use today",zh:"客户现在用的POS",qs:[
   {id:"q5",en:"Which POS systems do you currently install or support, and roughly how many sites run each?",zh:"您目前安装或维护哪些POS？各自大约多少家在用？"},
   {id:"q6",en:"Which POS systems do food and drink shops (especially bubble tea and Asian quick-service) use most among your clients?",zh:"您的餐饮客户（尤其奶茶和亚洲快餐）最常用哪些POS？"},
-  {id:"q7",en:"We understand many shops use their current POS on a business rental of about NZ$99 + GST a month over 36 months. What does the rental usually cover (hardware, software, maintenance, card terminal)? Can it be ended early, and what other fees come on top?",zh:"我们了解到，不少门店现有系统是以business rental方式使用，约99纽币/月加GST、租期36个月。租金通常包含哪些（硬件、软件、维护、刷卡终端）？能否提前退租？另外还有哪些费用？"},
+  {id:"q7",en:"I understand many shops use their current POS on a business rental of about NZ$99 + GST a month over 36 months. What does the rental usually cover (hardware, software, maintenance, card terminal)? Can it be ended early, and what other fees come on top?",zh:"我了解到，不少门店现有系统是以business rental方式使用，约99纽币/月加GST、租期36个月。租金通常包含哪些（硬件、软件、维护、刷卡终端）？能否提前退租？另外还有哪些费用？"},
   {id:"q8",en:"What makes your clients choose or switch POS systems?",zh:"您的客户选择或更换POS，最主要的原因是什么？"},
   {id:"q9",en:"Which problems with current systems take up most of your support time?",zh:"现有系统哪些问题最占用您的售后时间？"}]},
  {id:"s3",en:"Hardware and supply",zh:"硬件与供货",qs:[
   {id:"q10",en:"What share of your clients' counters use Android all-in-one terminals, iPads, or Windows touchscreens?",zh:"您客户的收银台用安卓一体机、iPad、Windows触摸屏的大致比例？"},
   {id:"q11",en:"Which terminal brands (e.g. iMin, Sunmi, Elo, Posiflex) do you prefer to install, and why?",zh:"您更愿意安装哪些一体机品牌（如iMin、商米、Elo、Posiflex）？为什么？"},
-  {id:"q12",en:"Could you supply terminals, kitchen printers, label printers and cash drawers for our pilot stores? What lead time and typical prices should we plan for?",zh:"能否为我们的试点门店供应一体机、厨房打印机、标签机和钱箱？我们应按怎样的到货时间和价格来规划？"},
+  {id:"q12",en:"Could you supply terminals, kitchen printers, label printers and cash drawers for my pilot stores? What lead time and typical prices should I plan for?",zh:"能否为我的试点门店供应一体机、厨房打印机、标签机和钱箱？我应按怎样的到货时间和价格来规划？"},
   {id:"q13",en:"Which parts fail most often, and how do you handle warranty, swaps and spare units today?",zh:"最常坏的部件是什么？您现在如何处理保修、换机和备用机？"},
   {id:"q14",en:"For cup and item labels, which printers and label sizes work well in your installs?",zh:"杯贴和商品标签，在您的安装经验里哪些打印机和标签尺寸好用？"}]},
  {id:"s4",en:"Payment terminals",zh:"支付终端",qs:[
@@ -173,24 +173,24 @@ const SECTIONS = [
   {id:"q16",en:"Roughly what share have card payments integrated with the POS, and what stops the others?",zh:"大约多少客户的刷卡与POS集成？其余没集成的原因是什么？"},
   {id:"q17",en:"When you set up integrated payments, what goes wrong most often, and who do you contact at the payment provider?",zh:"安装集成支付时最常出什么问题？您在支付服务商那边一般找谁对接？"}]},
  {id:"s5",en:"Installation and support",zh:"安装与售后",qs:[
-  {id:"q18",en:"Walk us through a typical install: steps, time on site, and who loads the menu.",zh:"请介绍一次典型的安装：步骤、现场时长、菜单由谁录入。"},
+  {id:"q18",en:"Walk me through a typical install: steps, time on site, and who loads the menu.",zh:"请介绍一次典型的安装：步骤、现场时长、菜单由谁录入。"},
   {id:"q19",en:"How often do store networks drop out, and what backup do you usually set up?",zh:"门店网络多久断一次？您通常配置什么备份方案？"},
   {id:"q20",en:"What are the top reasons shops call you, and what are your usual response times on weekdays, evenings and weekends?",zh:"门店最常因为什么找您？工作日、晚上和周末通常多久响应？"},
   {id:"q21",en:"Which printer connection (network, USB, Bluetooth) is most reliable in your experience?",zh:"您觉得哪种打印机连接方式（网口、USB、蓝牙）最稳定？"}]},
  {id:"s6",en:"Bundled services",zh:"打包服务",qs:[
   {id:"q22",en:"Which of your other services (network, CCTV, digital menu boards, electronic shelf labels) do food and drink shops ask for alongside a POS?",zh:"餐饮店在装POS时，还常会一起要您的哪些服务（网络、CCTV、数字菜单屏、电子价签）？"},
-  {id:"q23",en:"Would you like to offer our POS as part of a bundle with your services? How would you package it?",zh:"是否希望把我们的收银系统和您的服务打包提供？您会怎样组合？"}]},
+  {id:"q23",en:"Would you like to offer my POS as part of a bundle with your services? How would you package it?",zh:"是否希望把我的收银系统和您的服务打包提供？您会怎样组合？"}]},
  {id:"s7",en:"Product planning",zh:"产品规划",qs:[
   {id:"q24",en:"What do bubble tea and Asian quick-service shops most need that current systems don't do well?",zh:"奶茶和亚洲快餐店最需要、但现有系统做得不好的是什么？"},
-  {id:"q24b",en:"For these shops, which features should our system get right first?",zh:"针对这些门店，我们的系统最应该优先做好哪些功能？"},
-  {id:"q25",en:"Our planned core features are integrated card payments on Android terminals, one label per cup, bilingual Chinese/English and local on-site support. How would you rank them for your clients, and what is missing?",zh:"我们计划的核心功能是：安卓一体机集成刷卡、每杯一张杯贴、中英双语、本地上门支持。按对您客户的重要程度，您会怎样排序？还缺什么？"},
-  {id:"q26",en:"We plan to offer the system as a rental covering both hardware and software, similar to current business rentals. Do your clients prefer renting or buying outright, and what would make them choose our rental over their current one?",zh:"我们计划以租用方式提供（含硬件和软件），与现有business rental类似。您的客户更倾向租用还是一次性买断？什么能让他们选择我们的租用方案而不是现在的？"},
-  {id:"q27",en:"What would you need from us to install and recommend the system with confidence (training, documentation, test units, a direct support line)?",zh:"要放心地安装和推荐这套系统，您需要我们提供什么（培训、资料、测试机、直接的技术支持渠道）？"}]},
+  {id:"q24b",en:"For these shops, which features should my system get right first?",zh:"针对这些门店，我的系统最应该优先做好哪些功能？"},
+  {id:"q25",en:"My planned core features are integrated card payments on Android terminals, one label per cup, bilingual Chinese/English and local on-site support. How would you rank them for your clients, and what is missing?",zh:"我计划的核心功能是：安卓一体机集成刷卡、每杯一张杯贴、中英双语、本地上门支持。按对您客户的重要程度，您会怎样排序？还缺什么？"},
+  {id:"q26",en:"I plan to offer the system as a rental covering both hardware and software, similar to current business rentals. Do your clients prefer renting or buying outright, and what would make them choose my rental over their current one?",zh:"我计划以租用方式提供（含硬件和软件），与现有business rental类似。您的客户更倾向租用还是一次性买断？什么能让他们选择我的租用方案而不是现在的？"},
+  {id:"q27",en:"What would you need from me to install and recommend the system with confidence (training, documentation, test units, a direct support line)?",zh:"要放心地安装和推荐这套系统，您需要我提供什么（培训、资料、测试机、直接的技术支持渠道）？"}]},
  {id:"s8",en:"How we work together",zh:"合作方式",qs:[
   {id:"q28",en:"Which parts would you like to take on: installation, first-line support, hardware supply, referrals? What fees per install or per month would suit you?",zh:"您希望承担哪些部分：安装、一线售后、硬件供货、转介绍？按次或按月怎样收费适合您？"},
   {id:"q29",en:"For referrals or resale, what arrangement would work for you (one-off fee, share of the monthly fee, other)?",zh:"转介绍或代理，您希望怎样安排（一次性费用、月费分成、其他）？"},
   {id:"q30",en:"Which of your clients could join a free pilot, and how should we approach them together?",zh:"您的哪些客户适合参加免费试点？我们应如何一起去沟通？"},
-  {id:"q31",en:"How should we communicate day to day (contact person, channel, regular check-ins), and is there anything else we should know?",zh:"日常怎样沟通更好（对接人、渠道、定期碰头）？还有什么需要我们了解的？"}]}
+  {id:"q31",en:"How should we communicate day to day (contact person, channel, regular check-ins), and is there anything else I should know?",zh:"日常怎样沟通更好（对接人、渠道、定期碰头）？还有什么需要我了解的？"}]}
 ];
 
 const KEY="retail-tech-survey-draft-v3";
