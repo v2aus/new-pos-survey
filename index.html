@@ -108,7 +108,7 @@ const T = {
       fields:{company:"Company name",website:"Website",name:"Your name",role:"Your role",email:"Email",phone:"Phone"},
       privacyTitle:"How we use your answers",
       privacy:[
-        `Your answers are used only to plan the product and our cooperation, and to follow up with you if you agree. We do not sell them or publish them with your name.`,
+        `Your answers are used only to plan the product and our cooperation. We do not sell them or publish them.`,
         "Please do not include your customers' personal information or confidential contract documents.",
         ...(ONLINE?[CONFIG.providerNote.en]:[]),
         CONFIG.retentionNote.en,
@@ -133,7 +133,7 @@ const T = {
       fields:{company:"公司名称",website:"官网",name:"您的姓名",role:"您的职位",email:"邮箱",phone:"电话"},
       privacyTitle:"我们如何使用您的回答",
       privacy:[
-        `您的回答只用于产品与合作规划，以及在您同意时与您后续联系。我们不会出售，也不会署名公开。`,
+        `您的回答只用于产品与合作规划。我们不会出售，也不会公开。`,
         "请不要填写您客户的个人信息或保密合同内容。",
         ...(ONLINE?[CONFIG.providerNote.zh]:[]),
         CONFIG.retentionNote.zh,
@@ -154,8 +154,6 @@ const T = {
 /* Partner-facing questions. Internal notes, our price points and post-interview analysis are intentionally left out. */
 const SECTIONS = [
  {id:"s1",en:"Your business and clients",zh:"贵公司与客户",qs:[
-  {id:"q1",en:"How many technicians do you have, and which areas of Auckland (or beyond) do you cover?",zh:"贵公司有几位技术人员？覆盖奥克兰哪些区域（或奥克兰以外）？"},
-  {id:"q2",en:"Roughly how many client stores do you support, and how many new installs do you do per year?",zh:"大约服务多少家门店？每年新装多少家？"},
   {id:"q3",en:"What is the rough mix of your clients: supermarkets, convenience, restaurants, cafés, bubble tea, Asian quick-service, other?",zh:"客户业态大致比例：超市、便利店、餐厅、咖啡馆、奶茶、亚洲快餐、其他？"},
   {id:"q4",en:"Roughly what share of your clients are Asian-owned, and which languages do they prefer for training and support?",zh:"亚洲业主客户大约占多少？培训和售后时他们习惯用什么语言？"}]},
  {id:"s2",en:"What your clients use today",zh:"客户现在用的POS",qs:[
@@ -194,7 +192,7 @@ const SECTIONS = [
   {id:"q31",en:"How should we communicate day to day (contact person, channel, regular check-ins), and is there anything else we should know?",zh:"日常怎样沟通更好（对接人、渠道、定期碰头）？还有什么需要我们了解的？"}]}
 ];
 
-const KEY="retail-tech-survey-draft-v2";
+const KEY="retail-tech-survey-draft-v3";
 const $=s=>document.querySelector(s);
 let lang=(navigator.language||"").toLowerCase().startsWith("zh")?"zh":"en";
 let state={meta:{},answers:{},consent:false,contactOk:false};
@@ -212,17 +210,6 @@ function render(){
   const f=$("#form");f.innerHTML="";
   if(state.submitted){f.append(h("div",{class:"done"},[h("h2",{text:t.doneTitle}),h("p",{text:t.doneBody})]));$("#progress").textContent="";return}
 
-  const about=h("section",{},[h("h2",{},[h("span",{class:"n",text:"00"}),t.about])]);
-  const g=h("div",{class:"grid2"});
-  for(const k of ["company","website","name","role","email","phone"]){
-    const id="m_"+k,req=k==="company";
-    const lab=h("label",{for:id},[t.fields[k],req?null:h("span",{class:"opt",text:" · "+t.optional})]);
-    const inp=h("input",{id,name:id,type:k==="email"?"email":"text",autocomplete:{name:"name",email:"email",phone:"tel",company:"organization",website:"url",role:"organization-title"}[k]});
-    inp.value=state.meta[k]||"";
-    inp.addEventListener("input",e=>{state.meta[k]=e.target.value;persist()});
-    g.append(h("div",{class:"q"},[lab,inp]));
-  }
-  about.append(g);f.append(about);
 
   SECTIONS.forEach((s,si)=>{
     const sec=h("section",{id:s.id},[h("h2",{},[h("span",{class:"n",text:String(si+1).padStart(2,"0")}),s[lang]])]);
@@ -236,9 +223,7 @@ function render(){
 
   const priv=h("section",{},[h("h2",{text:t.privacyTitle}),h("div",{class:"privacy"},t.privacy.map(p=>h("p",{text:p})))]);
   const c1=h("input",{type:"checkbox",id:"consent"});c1.checked=!!state.consent;c1.addEventListener("change",e=>{state.consent=e.target.checked;persist()});
-  const c2=h("input",{type:"checkbox",id:"contactOk"});c2.checked=!!state.contactOk;c2.addEventListener("change",e=>{state.contactOk=e.target.checked;persist()});
   priv.append(h("label",{class:"check",for:"consent"},[c1,h("span",{text:t.consent})]));
-  priv.append(h("label",{class:"check",for:"contactOk"},[c2,h("span",{text:t.contactOk})]));
   f.append(priv);
 
   const hp=h("input",{type:"text",name:"website_confirm",id:"hp",tabindex:"-1",autocomplete:"off","aria-hidden":"true",style:"position:absolute;left:-9999px;width:1px;height:1px;opacity:0"});
@@ -259,7 +244,6 @@ function progress(){const a=Object.values(state.answers).filter(v=>v&&v.trim()).
 function setStatus(msg,cls){const s=$("#status");if(s){s.textContent=msg;s.className="status "+(cls||"")}}
 function check(){
   const t=T[lang];
-  if(!(state.meta.company||"").trim()){setStatus(t.needCompany,"err");$("#m_company").focus();return false}
   if(!state.consent){setStatus(t.needConsent,"err");$("#consent").focus();return false}
   return true;
 }
@@ -275,9 +259,7 @@ function row(){
   return {survey:p.survey,company:p.meta.company||null,contact_ok:p.contactOk,language:p.language,payload:p};
 }
 function asText(p){
-  const L=[`${T.en.title} / ${T.zh.title}`,`Company: ${p.meta.company||""}`,`Website: ${p.meta.website||""}`,`Name: ${p.meta.name||""} · Role: ${p.meta.role||""}`];
-  if(p.contactOk)L.push(`Email: ${p.meta.email||""} · Phone: ${p.meta.phone||""}`);
-  L.push(`Contact OK: ${p.contactOk?"yes":"no"} · Submitted: ${p.submittedAt}`,"");
+  const L=[`${T.en.title} / ${T.zh.title}`,`Submitted: ${p.submittedAt}`,""];
   for(const a of p.answers)L.push(`[${a.id}] ${a.question}`,a.answer,"");
   return L.join("\n");
 }
