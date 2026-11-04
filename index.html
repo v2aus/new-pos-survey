@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Retail Tech Partner Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one calm column of question cards; language switch and progress in the header; submit panel at the end */
+:root{
+  --bg:#f3f5f6; --surface:#fff; --ink:#18232b; --muted:#5d6b75; --line:#d7dee3;
+  --accent:#0d6b73; --accent-soft:#e1f0f1; --warn:#a6461f; --ok:#2f7a3c;
+  --f-display:"Noto Serif SC","Songti SC",Georgia,serif;
+  --f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#11181d; --surface:#18222a; --ink:#e4ebef; --muted:#9aa9b3; --line:#2c3a44;
+  --accent:#5cc3ca; --accent-soft:#163338; --warn:#f0936b; --ok:#7fcf8b; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+header{display:flex;flex-direction:column;gap:10px;border-bottom:2px solid var(--ink);padding-bottom:16px}
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-size:1.75rem;line-height:1.25;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:62ch}
+.lang{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.lang button{border:0;border-radius:0;padding:6px 12px;background:var(--surface)}
+.lang button[aria-pressed=true]{background:var(--accent);color:var(--surface)}
+.progress{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:12px}
+h2{font-family:var(--f-display);font-size:1.2rem;margin:0;display:flex;gap:10px;align-items:baseline}
+h2 .n{font-family:var(--f-mono);font-size:.8rem;color:var(--accent)}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.q label{font-weight:500}
+.hint{font-size:.85rem;color:var(--muted);margin-top:-4px}
+.opt{font-size:.8rem;color:var(--muted);font-weight:400}
+textarea,input[type=text],input[type=email]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+textarea{min-height:72px;resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.check{display:flex;gap:10px;align-items:flex-start}
+.check input{margin-top:6px;flex:none}
+.privacy{background:var(--accent-soft);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;font-size:.92rem}
+.privacy p{margin:0 0 6px}
+button{font:inherit;cursor:pointer;border-radius:6px;padding:10px 16px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:500}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.status{font-size:.92rem}
+.status.err{color:var(--warn)} .status.ok{color:var(--ok)}
+.done{background:var(--surface);border:1px solid var(--ok);border-radius:8px;padding:20px}
+footer{font-size:.82rem;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header>
+    <div class="toprow">
+      <span class="eyebrow" id="eyebrow"></span>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </div>
+    </div>
+    <h1 id="title"></h1>
+    <p class="lead" id="lead"></p>
+    <span class="progress" id="progress"></span>
+  </header>
+
+  <form id="form" novalidate></form>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+/* ===== Configuration: edit before deploying ===== */
+const CONFIG = {
+  // How the team is described to respondents. Switch to the product name once the trademark and domains are secured.
+  brand: { en: "an Auckland POS startup", zh: "奥克兰的一家收银系统初创团队" },
+  contactEmail: "frankliu.work@outlook.com", // where respondents can ask questions or request deletion
+  // Optional form backend that accepts a JSON POST (e.g. a Formspree endpoint "https://formspree.io/f/xxxx").
+  // Leave empty to let respondents download or copy their answers and email them to contactEmail.
+  submitEndpoint: "",
+  retentionNote: { en: "We keep responses for up to 24 months, then delete them.", zh: "答卷最长保存24个月，之后删除。" }
+};
+/* ================================================= */
+
+const T = {
+  en:{eyebrow:"Auckland · retail & hospitality technology",
+      title:"Retail Tech Partner Survey",
+      lead:`We are ${CONFIG.brand.en} building a point-of-sale system for Asian bubble tea and quick-service food shops in Auckland. As a local installer you see far more stores than we can. Your view helps us understand what shops use today and what they need. About 20–30 minutes; skip anything you prefer not to answer.`,
+      progress:(a,b)=>`${a} of ${b} questions answered`,
+      optional:"optional",
+      about:"About you",
+      fields:{company:"Company name",website:"Website",name:"Your name",role:"Your role",email:"Email",phone:"Phone"},
+      privacyTitle:"How we use your answers",
+      privacy:[
+        `Your answers are used only for our market research and to follow up with you if you agree. We do not sell them or publish them with your name.`,
+        "Please do not include your customers' personal information or confidential contract documents.",
+        CONFIG.retentionNote.en,
+        `You can ask to see, correct or delete your answers at ${CONFIG.contactEmail}.`],
+      consent:"I agree to these terms and to sharing my answers with the research team.",
+      contactOk:"You may contact me about follow-up questions or a possible partnership.",
+      submit:"Submit answers", download:"Download answers", copy:"Copy answers",
+      noBackend:`After finishing, download or copy your answers and email them to ${CONFIG.contactEmail}.`,
+      needConsent:"Please tick the agreement box first.", needCompany:"Please enter your company name.",
+      sending:"Sending…", sent:"Thank you. Your answers have been received.",
+      sendFail:"Sending failed. Please download your answers and email them to us instead.",
+      copied:"Copied. Paste them into an email to us.", copyFail:"Copy failed. Use Download instead.",
+      draft:"Your answers are saved in this browser until you submit.",
+      doneTitle:"Thank you", doneBody:"We appreciate your time and will be in touch if you asked us to.",
+      footer:`Auckland POS market research · Questions: ${CONFIG.contactEmail}`},
+  zh:{eyebrow:"奥克兰 · 零售与餐饮技术",
+      title:"零售技术服务商调查",
+      lead:`我们是${CONFIG.brand.zh}，正在开发一款面向奥克兰亚洲奶茶店和快餐店的收银系统。作为本地安装服务商，您接触的门店比我们多得多，您的看法能帮助我们了解门店现在用什么、还需要什么。约20–30分钟，不想回答的问题可以跳过。`,
+      progress:(a,b)=>`已回答 ${a} / ${b} 题`,
+      optional:"选填",
+      about:"基本信息",
+      fields:{company:"公司名称",website:"官网",name:"您的姓名",role:"您的职位",email:"邮箱",phone:"电话"},
+      privacyTitle:"我们如何使用您的回答",
+      privacy:[
+        `您的回答只用于我们的市场调研，以及在您同意时与您后续联系。我们不会出售，也不会署名公开。`,
+        "请不要填写您客户的个人信息或保密合同内容。",
+        CONFIG.retentionNote.zh,
+        `如需查看、更正或删除您的回答，请联系 ${CONFIG.contactEmail}。`],
+      consent:"我同意以上说明，并同意将回答提供给调研团队。",
+      contactOk:"可以就后续问题或合作可能与我联系。",
+      submit:"提交答卷", download:"下载答卷", copy:"复制答卷",
+      noBackend:`填写完成后，请下载或复制答卷，发送到 ${CONFIG.contactEmail}。`,
+      needConsent:"请先勾选同意。", needCompany:"请填写公司名称。",
+      sending:"正在提交…", sent:"谢谢，我们已收到您的回答。",
+      sendFail:"提交失败。请下载答卷并通过邮件发给我们。",
+      copied:"已复制，请粘贴到邮件发给我们。", copyFail:"复制失败，请使用下载。",
+      draft:"提交前，您的回答会保存在本浏览器中。",
+      doneTitle:"谢谢", doneBody:"感谢您抽出时间。如您同意，我们会与您联系。",
+      footer:`奥克兰收银系统市场调研 · 联系：${CONFIG.contactEmail}`}
+};
+
+/* Outward-facing questions. Internal notes, price points and post-interview analysis are intentionally left out. */
+const SECTIONS = [
+ {id:"s1",en:"Your business",zh:"业务概况",qs:[
+  {id:"q1",en:"How long has the business been running, how many technicians do you have, and which areas do you cover?",zh:"公司成立多久、有几位技术人员、服务哪些区域？"},
+  {id:"q2",en:"Roughly how many client stores do you support, and how many new installs per year?",zh:"大约服务多少家门店？每年新装多少家？"},
+  {id:"q3",en:"What is the rough mix of your clients: supermarkets, convenience, restaurants, cafés, bubble tea, Asian quick-service, other?",zh:"客户业态大致比例：超市、便利店、餐厅、咖啡馆、奶茶、亚洲快餐、其他？"},
+  {id:"q4",en:"Roughly what share of your clients are Asian-owned, and which languages do they prefer?",zh:"亚洲业主客户大约占多少？他们习惯用什么语言沟通？"}]},
+ {id:"s2",en:"POS systems in the market",zh:"POS系统",qs:[
+  {id:"q5",en:"Which POS systems do you sell or install, and roughly how many sites run each?",zh:"您销售或安装哪些POS？各自大约多少家在用？"},
+  {id:"q6",en:"Which POS systems do food and drink shops (especially bubble tea and Asian quick-service) use most in Auckland?",zh:"奥克兰餐饮店（尤其奶茶和亚洲快餐）最常用哪些POS？"},
+  {id:"q7",en:"What do shops typically pay per month for POS software, and are there extra module or setup fees?",zh:"门店POS软件通常每月付多少？有没有额外的模块费或安装费？"},
+  {id:"q8",en:"What matters most to shops when choosing a POS, and why do they switch?",zh:"门店选POS最看重什么？通常因为什么换系统？"},
+  {id:"q9",en:"What are the most common complaints or faults you see with current systems?",zh:"现有系统最常见的投诉或故障是什么？"}]},
+ {id:"s3",en:"Hardware",zh:"硬件",qs:[
+  {id:"q10",en:"What share of counters use Android all-in-one terminals, iPads, or Windows touchscreens?",zh:"收银台用安卓一体机、iPad、Windows触摸屏的大致比例？"},
+  {id:"q11",en:"Which terminal brands (e.g. iMin, Sunmi, Elo, Posiflex) do you rate for quality and after-sales support?",zh:"哪些一体机品牌（如iMin、商米、Elo、Posiflex）质量和售后较好？"},
+  {id:"q12",en:"What are typical retail price ranges for a terminal, kitchen printer, label printer and cash drawer?",zh:"一体机、厨房打印机、标签机、钱箱的常见零售价区间？"},
+  {id:"q13",en:"Which parts fail most often, and how are warranty and replacement usually handled?",zh:"最常坏的部件是什么？保修和换机通常怎么处理？"},
+  {id:"q14",en:"For cup or item labels, which printers and label sizes work well in practice?",zh:"杯贴或商品标签，实际好用的打印机和标签尺寸是什么？"}]},
+ {id:"s4",en:"Payment terminals",zh:"支付终端",qs:[
+  {id:"q15",en:"Which payment providers and terminals do your clients use (Windcave, Worldline, Verifone, Smartpay, other)?",zh:"客户用哪些支付服务商和终端（Windcave、Worldline、Verifone、Smartpay等）？"},
+  {id:"q16",en:"Roughly what share have card payments integrated with the POS, and why don't the others?",zh:"大约多少客户的刷卡与POS集成？没集成的原因是什么？"},
+  {id:"q17",en:"What issues come up most when setting up integrated payments?",zh:"安装集成支付时最常遇到什么问题？"}]},
+ {id:"s5",en:"Installation, network and support",zh:"安装、网络与支持",qs:[
+  {id:"q18",en:"What does a typical POS installation involve, how long does it take, and who loads the menu?",zh:"一次典型的POS安装包括什么、需要多久、菜单由谁录入？"},
+  {id:"q19",en:"How often do store networks drop out, and what do you recommend as a backup?",zh:"门店网络多久断一次？您推荐什么备份方案？"},
+  {id:"q20",en:"What are the top reasons shops call you for help?",zh:"门店最常因为什么找您求助？"},
+  {id:"q21",en:"Which printer connection (network, USB, Bluetooth) is most reliable in your experience?",zh:"您觉得哪种打印机连接方式（网口、USB、蓝牙）最稳定？"}]},
+ {id:"s6",en:"Shelf labels, CCTV and bundles",zh:"电子价签、CCTV与打包服务",qs:[
+  {id:"q22",en:"Do food and drink shops ask for electronic shelf labels, digital menu boards or CCTV linked to the POS?",zh:"餐饮店是否需要电子价签、数字菜单屏或与POS联动的CCTV？"},
+  {id:"q23",en:"Do shops prefer one provider for POS, network and CCTV together?",zh:"门店是否偏好由一家服务商同时负责POS、网络和CCTV？"}]},
+ {id:"s7",en:"Your view on a new POS",zh:"对新收银系统的看法",qs:[
+  {id:"q24",en:"What do bubble tea and Asian quick-service shops most need that current systems don't do well?",zh:"奶茶和亚洲快餐店最需要、但现有系统做得不好的是什么？"},
+  {id:"q25",en:"How useful would these be to your clients: integrated card payments on Android terminals, one label per cup, bilingual Chinese/English, local on-site support?",zh:"以下对您的客户有多大用处：安卓一体机集成刷卡、每杯一张杯贴、中英双语、本地上门支持？"},
+  {id:"q26",en:"What monthly price range do small food shops accept for POS software?",zh:"小型餐饮店通常能接受的POS软件月费区间？"},
+  {id:"q27",en:"What would make you hesitant to recommend a new POS brand?",zh:"推荐一个新的POS品牌，您最大的顾虑是什么？"}]},
+ {id:"s8",en:"Working together",zh:"合作可能",qs:[
+  {id:"q28",en:"Would you be interested in installation or support work for a new POS? What would you charge per install or per month?",zh:"是否有兴趣承接新POS的安装或售后？按次或按月如何收费？"},
+  {id:"q29",en:"Would you consider referring clients or reselling? What arrangement would suit you?",zh:"是否考虑转介绍或代理？什么合作方式适合您？"},
+  {id:"q30",en:"Could you suggest shops that might try a new system in a free pilot?",zh:"能否推荐愿意免费试用新系统的门店？"},
+  {id:"q31",en:"Anything else you'd like to tell us?",zh:"还有什么想告诉我们的？"}]}
+];
+
+const KEY="retail-tech-survey-draft-v1";
+const $=s=>document.querySelector(s);
+let lang=(navigator.language||"").toLowerCase().startsWith("zh")?"zh":"en";
+let state={meta:{},answers:{},consent:false,contactOk:false};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)state=Object.assign(state,s)}catch(e){}
+
+function h(tag,attrs={},kids=[]){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==="text")e.textContent=v;else e.setAttribute(k,v)}for(const c of [].concat(kids))if(c!=null)e.append(c);return e}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+const totalQs=SECTIONS.reduce((n,s)=>n+s.qs.length,0);
+
+function render(){
+  const t=T[lang];document.documentElement.lang=lang==="zh"?"zh-CN":"en";
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
+  $("#eyebrow").textContent=t.eyebrow;$("#title").textContent=t.title;$("#lead").textContent=t.lead;$("#footer").textContent=t.footer;
+  document.title=t.title;
+  const f=$("#form");f.innerHTML="";
+  if(state.submitted){f.append(h("div",{class:"done"},[h("h2",{text:t.doneTitle}),h("p",{text:t.doneBody})]));$("#progress").textContent="";return}
+
+  const about=h("section",{},[h("h2",{},[h("span",{class:"n",text:"00"}),t.about])]);
+  const g=h("div",{class:"grid2"});
+  for(const k of ["company","website","name","role","email","phone"]){
+    const id="m_"+k,req=k==="company";
+    const lab=h("label",{for:id},[t.fields[k],req?null:h("span",{class:"opt",text:" · "+t.optional})]);
+    const inp=h("input",{id,name:id,type:k==="email"?"email":"text",autocomplete:{name:"name",email:"email",phone:"tel",company:"organization",website:"url",role:"organization-title"}[k]});
+    inp.value=state.meta[k]||"";
+    inp.addEventListener("input",e=>{state.meta[k]=e.target.value;persist()});
+    g.append(h("div",{class:"q"},[lab,inp]));
+  }
+  about.append(g);f.append(about);
+
+  SECTIONS.forEach((s,si)=>{
+    const sec=h("section",{id:s.id},[h("h2",{},[h("span",{class:"n",text:String(si+1).padStart(2,"0")}),s[lang]])]);
+    s.qs.forEach(q=>{
+      const id="a_"+q.id;const ta=h("textarea",{id,name:id,rows:"3"});ta.value=state.answers[q.id]||"";
+      ta.addEventListener("input",e=>{state.answers[q.id]=e.target.value;persist();progress()});
+      sec.append(h("div",{class:"q"},[h("label",{for:id,text:q[lang]}),ta]));
+    });
+    f.append(sec);
+  });
+
+  const priv=h("section",{},[h("h2",{text:t.privacyTitle}),h("div",{class:"privacy"},t.privacy.map(p=>h("p",{text:p})))]);
+  const c1=h("input",{type:"checkbox",id:"consent"});c1.checked=!!state.consent;c1.addEventListener("change",e=>{state.consent=e.target.checked;persist()});
+  const c2=h("input",{type:"checkbox",id:"contactOk"});c2.checked=!!state.contactOk;c2.addEventListener("change",e=>{state.contactOk=e.target.checked;persist()});
+  priv.append(h("label",{class:"check",for:"consent"},[c1,h("span",{text:t.consent})]));
+  priv.append(h("label",{class:"check",for:"contactOk"},[c2,h("span",{text:t.contactOk})]));
+  f.append(priv);
+
+  const status=h("p",{class:"status",id:"status",text:CONFIG.submitEndpoint?t.draft:t.noBackend});
+  const acts=h("div",{class:"actions"});
+  if(CONFIG.submitEndpoint){const b=h("button",{type:"submit",class:"primary",id:"submitBtn",text:t.submit});acts.append(b)}
+  const dl=h("button",{type:"button",id:"dlBtn",text:t.download,class:CONFIG.submitEndpoint?"":"primary"});
+  const cp=h("button",{type:"button",id:"cpBtn",text:t.copy});
+  acts.append(dl,cp);
+  f.append(h("section",{},[acts,status]));
+  dl.addEventListener("click",()=>{if(!check())return;download()});
+  cp.addEventListener("click",()=>{if(!check())return;copy()});
+  progress();
+}
+
+function progress(){const a=Object.values(state.answers).filter(v=>v&&v.trim()).length;$("#progress").textContent=T[lang].progress(a,totalQs)}
+function setStatus(msg,cls){const s=$("#status");if(s){s.textContent=msg;s.className="status "+(cls||"")}}
+function check(){
+  const t=T[lang];
+  if(!(state.meta.company||"").trim()){setStatus(t.needCompany,"err");$("#m_company").focus();return false}
+  if(!state.consent){setStatus(t.needConsent,"err");$("#consent").focus();return false}
+  return true;
+}
+function payload(){
+  const answers=[];
+  for(const s of SECTIONS)for(const q of s.qs){const v=(state.answers[q.id]||"").trim();if(v)answers.push({id:q.id,section:s.en,question:q.en,answer:v})}
+  const meta=Object.fromEntries(Object.entries(state.meta).map(([k,v])=>[k,(v||"").trim()]));
+  if(!state.contactOk){delete meta.email;delete meta.phone}
+  return {survey:"retail-tech-partner-v1",submittedAt:new Date().toISOString(),language:lang,consent:true,contactOk:!!state.contactOk,meta,answers};
+}
+function asText(p){
+  const L=[`${T.en.title} / ${T.zh.title}`,`Company: ${p.meta.company||""}`,`Website: ${p.meta.website||""}`,`Name: ${p.meta.name||""} · Role: ${p.meta.role||""}`];
+  if(p.contactOk)L.push(`Email: ${p.meta.email||""} · Phone: ${p.meta.phone||""}`);
+  L.push(`Contact OK: ${p.contactOk?"yes":"no"} · Submitted: ${p.submittedAt}`,"");
+  for(const a of p.answers)L.push(`[${a.id}] ${a.question}`,a.answer,"");
+  return L.join("\n");
+}
+function download(){
+  const p=payload();const blob=new Blob([asText(p)+"\n\n---\n"+JSON.stringify(p,null,2)],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=`survey-${(p.meta.company||"answers").replace(/[^\w-]+/g,"_")}.txt`;document.body.append(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+}
+async function copy(){
+  const t=T[lang],txt=asText(payload());
+  try{await navigator.clipboard.writeText(txt);setStatus(t.copied,"ok")}
+  catch(e){const ta=document.createElement("textarea");ta.value=txt;document.body.append(ta);ta.select();
+    try{document.execCommand("copy");setStatus(t.copied,"ok")}catch(_){setStatus(t.copyFail,"err")}ta.remove()}
+}
+$("#form").addEventListener("submit",async e=>{
+  e.preventDefault();const t=T[lang];if(!CONFIG.submitEndpoint||!check())return;
+  const b=$("#submitBtn");b.disabled=true;setStatus(t.sending);
+  try{
+    const r=await fetch(CONFIG.submitEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload())});
+    if(!r.ok)throw new Error(r.status);
+    state={meta:{},answers:{},consent:false,contactOk:false,submitted:true};persist();render();
+  }catch(err){setStatus(t.sendFail,"err");b.disabled=false}
+});
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;render()}));
+render();
+</script>
+</body>
+</html>
