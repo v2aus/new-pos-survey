@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Partner Planning Questionnaire</title>
+<title>POS System Planning Survey</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -100,7 +100,7 @@ const ONLINE = !!(CONFIG.supabase.url && CONFIG.supabase.anonKey);
 
 const T = {
   en:{eyebrow:"Auckland · partner planning",
-      title:"Partner Planning Questionnaire",
+      title:"POS System Planning Survey",
       lead:`Thank you for working with us. We are building a point-of-sale system for Asian bubble tea and quick-service food shops in Auckland, and your experience installing and supporting stores is central to getting it right. This questionnaire helps us plan together: what your clients use and need today, how the product should fit your installs, and how we split installation, support and referrals. About 20–30 minutes; skip anything you would rather discuss in person.`,
       progress:(a,b)=>`${a} of ${b} questions answered`,
       optional:"optional",
@@ -123,9 +123,9 @@ const T = {
       copied:"Copied. Paste them into an email to us.", copyFail:"Copy failed. Use Download instead.",
       draft:"Your answers are saved in this browser until you submit.",
       doneTitle:"Thank you", doneBody:"We will go through your answers and come back to you with next steps for working together.",
-      footer:`Partner planning · Questions: ${CONFIG.contactEmail}`},
+      footer:`POS system planning survey · Questions: ${CONFIG.contactEmail}`},
   zh:{eyebrow:"奥克兰 · 合作规划",
-      title:"合作伙伴规划问卷",
+      title:"POS系统规划调查",
       lead:`感谢您与我们合作。我们正在开发一款面向奥克兰亚洲奶茶店和快餐店的收银系统，您在门店安装和售后上的经验，是把产品做对的关键。这份问卷用于我们共同规划：您的客户现在用什么、还缺什么，产品怎样配合您的安装工作，以及安装、售后和转介绍如何分工。约20–30分钟，想当面细谈的问题可以先跳过。`,
       progress:(a,b)=>`已回答 ${a} / ${b} 题`,
       optional:"选填",
@@ -148,7 +148,7 @@ const T = {
       copied:"已复制，请粘贴到邮件发给我们。", copyFail:"复制失败，请使用下载。",
       draft:"提交前，您的回答会保存在本浏览器中。",
       doneTitle:"谢谢", doneBody:"我们会仔细阅读您的回答，并就下一步合作安排与您联系。",
-      footer:`合作规划问卷 · 联系：${CONFIG.contactEmail}`}
+      footer:`POS系统规划调查 · 联系：${CONFIG.contactEmail}`}
 };
 
 /* Partner-facing questions. Internal notes, our price points and post-interview analysis are intentionally left out. */
