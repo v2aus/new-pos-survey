@@ -89,8 +89,8 @@ const CONFIG = {
   contactEmail: "frankliu.work@outlook.com", // where respondents can ask questions or request deletion
   // Supabase project used to store submissions as JSON (see README for the table SQL).
   // Leave url or anonKey empty to let respondents download or copy their answers and email them instead.
-  // The anon key is public by design; the table's row-level security only allows inserts.
-  supabase: { url: "", anonKey: "", table: "survey_responses" },
+  // The publishable (anon) key is public by design; never put the secret key here. the table's row-level security only allows inserts.
+  supabase: { url: "https://lqhdboipglxyfoqixsmz.supabase.co", anonKey: "sb_publishable_qlSD12af6YfPjdT7wale3Q_-iOJQYfB", table: "survey_responses" },
   // Shown in the privacy notice when online submission is on.
   providerNote: { en: "Submitted answers are stored in our database hosted by Supabase in Sydney, Australia.", zh: "在线提交的答卷保存在我们的数据库中，由 Supabase 托管，服务器位于澳大利亚悉尼。" },
   retentionNote: { en: "We keep responses for up to 24 months, then delete them.", zh: "答卷最长保存24个月，之后删除。" }
@@ -300,7 +300,7 @@ $("#form").addEventListener("submit",async e=>{
     if(($("#hp")||{}).value){state={meta:{},answers:{},consent:false,contactOk:false,submitted:true};persist();render();return}
     const sb=CONFIG.supabase;
     const r=await fetch(sb.url.replace(/\/$/,"")+"/rest/v1/"+sb.table,{method:"POST",
-      headers:{"Content-Type":"application/json","apikey":sb.anonKey,"Authorization":"Bearer "+sb.anonKey,"Prefer":"return=minimal"},
+      headers:{"Content-Type":"application/json","apikey":sb.anonKey,"Prefer":"return=minimal"},
       body:JSON.stringify(row())});
     if(!r.ok)throw new Error(r.status);
     state={meta:{},answers:{},consent:false,contactOk:false,submitted:true};persist();render();
