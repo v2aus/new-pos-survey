@@ -87,12 +87,16 @@ const CONFIG = {
   // How the team is described to respondents. Switch to the product name once the trademark and domains are secured.
   brand: { en: "an Auckland POS startup", zh: "奥克兰的一家收银系统初创团队" },
   contactEmail: "frankliu.work@outlook.com", // where respondents can ask questions or request deletion
-  // Optional form backend that accepts a JSON POST (e.g. a Formspree endpoint "https://formspree.io/f/xxxx").
-  // Leave empty to let respondents download or copy their answers and email them to contactEmail.
-  submitEndpoint: "",
+  // Supabase project used to store submissions as JSON (see README for the table SQL).
+  // Leave url or anonKey empty to let respondents download or copy their answers and email them instead.
+  // The anon key is public by design; the table's row-level security only allows inserts.
+  supabase: { url: "", anonKey: "", table: "survey_responses" },
+  // Shown in the privacy notice when online submission is on.
+  providerNote: { en: "Submitted answers are stored in our database hosted by Supabase in Sydney, Australia.", zh: "在线提交的答卷保存在我们的数据库中，由 Supabase 托管，服务器位于澳大利亚悉尼。" },
   retentionNote: { en: "We keep responses for up to 24 months, then delete them.", zh: "答卷最长保存24个月，之后删除。" }
 };
 /* ================================================= */
+const ONLINE = !!(CONFIG.supabase.url && CONFIG.supabase.anonKey);
 
 const T = {
   en:{eyebrow:"Auckland · retail & hospitality technology",
@@ -106,6 +110,7 @@ const T = {
       privacy:[
         `Your answers are used only for our market research and to follow up with you if you agree. We do not sell them or publish them with your name.`,
         "Please do not include your customers' personal information or confidential contract documents.",
+        ...(ONLINE?[CONFIG.providerNote.en]:[]),
         CONFIG.retentionNote.en,
         `You can ask to see, correct or delete your answers at ${CONFIG.contactEmail}.`],
       consent:"I agree to these terms and to sharing my answers with the research team.",
@@ -130,6 +135,7 @@ const T = {
       privacy:[
         `您的回答只用于我们的市场调研，以及在您同意时与您后续联系。我们不会出售，也不会署名公开。`,
         "请不要填写您客户的个人信息或保密合同内容。",
+        ...(ONLINE?[CONFIG.providerNote.zh]:[]),
         CONFIG.retentionNote.zh,
         `如需查看、更正或删除您的回答，请联系 ${CONFIG.contactEmail}。`],
       consent:"我同意以上说明，并同意将回答提供给调研团队。",
@@ -235,10 +241,12 @@ function render(){
   priv.append(h("label",{class:"check",for:"contactOk"},[c2,h("span",{text:t.contactOk})]));
   f.append(priv);
 
-  const status=h("p",{class:"status",id:"status",text:CONFIG.submitEndpoint?t.draft:t.noBackend});
+  const hp=h("input",{type:"text",name:"website_confirm",id:"hp",tabindex:"-1",autocomplete:"off","aria-hidden":"true",style:"position:absolute;left:-9999px;width:1px;height:1px;opacity:0"});
+  f.append(hp);
+  const status=h("p",{class:"status",id:"status",text:ONLINE?t.draft:t.noBackend});
   const acts=h("div",{class:"actions"});
-  if(CONFIG.submitEndpoint){const b=h("button",{type:"submit",class:"primary",id:"submitBtn",text:t.submit});acts.append(b)}
-  const dl=h("button",{type:"button",id:"dlBtn",text:t.download,class:CONFIG.submitEndpoint?"":"primary"});
+  if(ONLINE){const b=h("button",{type:"submit",class:"primary",id:"submitBtn",text:t.submit});acts.append(b)}
+  const dl=h("button",{type:"button",id:"dlBtn",text:t.download,class:ONLINE?"":"primary"});
   const cp=h("button",{type:"button",id:"cpBtn",text:t.copy});
   acts.append(dl,cp);
   f.append(h("section",{},[acts,status]));
@@ -262,6 +270,10 @@ function payload(){
   if(!state.contactOk){delete meta.email;delete meta.phone}
   return {survey:"retail-tech-partner-v1",submittedAt:new Date().toISOString(),language:lang,consent:true,contactOk:!!state.contactOk,meta,answers};
 }
+function row(){
+  const p=payload();
+  return {survey:p.survey,company:p.meta.company||null,contact_ok:p.contactOk,language:p.language,payload:p};
+}
 function asText(p){
   const L=[`${T.en.title} / ${T.zh.title}`,`Company: ${p.meta.company||""}`,`Website: ${p.meta.website||""}`,`Name: ${p.meta.name||""} · Role: ${p.meta.role||""}`];
   if(p.contactOk)L.push(`Email: ${p.meta.email||""} · Phone: ${p.meta.phone||""}`);
@@ -282,10 +294,14 @@ async function copy(){
     try{document.execCommand("copy");setStatus(t.copied,"ok")}catch(_){setStatus(t.copyFail,"err")}ta.remove()}
 }
 $("#form").addEventListener("submit",async e=>{
-  e.preventDefault();const t=T[lang];if(!CONFIG.submitEndpoint||!check())return;
+  e.preventDefault();const t=T[lang];if(!ONLINE||!check())return;
   const b=$("#submitBtn");b.disabled=true;setStatus(t.sending);
   try{
-    const r=await fetch(CONFIG.submitEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload())});
+    if(($("#hp")||{}).value){state={meta:{},answers:{},consent:false,contactOk:false,submitted:true};persist();render();return}
+    const sb=CONFIG.supabase;
+    const r=await fetch(sb.url.replace(/\/$/,"")+"/rest/v1/"+sb.table,{method:"POST",
+      headers:{"Content-Type":"application/json","apikey":sb.anonKey,"Authorization":"Bearer "+sb.anonKey,"Prefer":"return=minimal"},
+      body:JSON.stringify(row())});
     if(!r.ok)throw new Error(r.status);
     state={meta:{},answers:{},consent:false,contactOk:false,submitted:true};persist();render();
   }catch(err){setStatus(t.sendFail,"err");b.disabled=false}
