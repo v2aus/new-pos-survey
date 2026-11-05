@@ -81,21 +81,9 @@ footer{font-size:.82rem;color:var(--muted)}
   <footer id="footer"></footer>
 </div>
 
+<script src="./survey-config.js"></script>
 <script>
-/* ===== Configuration: edit before deploying ===== */
-const CONFIG = {
-  // How the team is described to respondents. Switch to the product name once the trademark and domains are secured.
-  brand: { en: "an Auckland POS startup", zh: "奥克兰的一家POS系统初创团队" },
-  contactEmail: "frankliu.work@outlook.com", // where respondents can ask questions or request deletion
-  // Supabase project used to store submissions as JSON (see README for the table SQL).
-  // Leave url or anonKey empty to let respondents download or copy their answers and email them instead.
-  // The publishable (anon) key is public by design; never put the secret key here. the table's row-level security only allows inserts.
-  supabase: { url: "https://lqhdboipglxyfoqixsmz.supabase.co", anonKey: "sb_publishable_qlSD12af6YfPjdT7wale3Q_-iOJQYfB", table: "survey_responses" },
-  // Shown in the privacy notice when online submission is on.
-  providerNote: { en: "Submitted answers are stored in my database hosted by Supabase.", zh: "在线提交的答卷保存在我的数据库中，由 Supabase 托管。" },
-  retentionNote: { en: "I keep responses for up to 24 months, then delete them.", zh: "答卷最长保存24个月，之后删除。" }
-};
-/* ================================================= */
+const CONFIG = globalThis.SURVEY_CONFIG;
 const ONLINE = !!(CONFIG.supabase.url && CONFIG.supabase.anonKey);
 
 const T = {
@@ -200,6 +188,7 @@ const $=s=>document.querySelector(s);
 let lang=(navigator.language||"").toLowerCase().startsWith("zh")?"zh":"en";
 let state={meta:{},answers:{},consent:false,contactOk:false};
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)state=Object.assign(state,s)}catch(e){}
+state.meta={company:"SHOPTECH",...state.meta};
 
 function h(tag,attrs={},kids=[]){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==="text")e.textContent=v;else e.setAttribute(k,v)}for(const c of [].concat(kids))if(c!=null)e.append(c);return e}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
@@ -214,6 +203,18 @@ function render(){
   if(state.submitted){f.append(h("div",{class:"done"},[h("h2",{text:t.doneTitle}),h("p",{text:t.doneBody})]));$("#progress").textContent="";return}
 
 
+  const about=h("section",{},[h("h2",{},[h("span",{class:"n",text:"00"}),t.about])]);
+  const g=h("div",{class:"grid2"});
+  for(const k of ["company","website","name","role","email","phone"]){
+    const id="m_"+k,req=k==="company";
+    const lab=h("label",{for:id},[t.fields[k],req?null:h("span",{class:"opt",text:" · "+t.optional})]);
+    const inp=h("input",{id,name:id,type:k==="email"?"email":"text",autocomplete:{name:"name",email:"email",phone:"tel",company:"organization",website:"url",role:"organization-title"}[k]});
+    inp.value=state.meta[k]||"";
+    inp.addEventListener("input",e=>{state.meta[k]=e.target.value;persist()});
+    g.append(h("div",{class:"q"},[lab,inp]));
+  }
+  about.append(g);f.append(about);
+
   SECTIONS.forEach((s,si)=>{
     const sec=h("section",{id:s.id},[h("h2",{},[h("span",{class:"n",text:String(si+1).padStart(2,"0")}),s[lang]])]);
     s.qs.forEach(q=>{
@@ -227,6 +228,8 @@ function render(){
   const priv=h("section",{},[h("h2",{text:t.privacyTitle}),h("div",{class:"privacy"},t.privacy.map(p=>h("p",{text:p})))]);
   const c1=h("input",{type:"checkbox",id:"consent"});c1.checked=!!state.consent;c1.addEventListener("change",e=>{state.consent=e.target.checked;persist()});
   priv.append(h("label",{class:"check",for:"consent"},[c1,h("span",{text:t.consent})]));
+  const c2=h("input",{type:"checkbox",id:"contactOk"});c2.checked=!!state.contactOk;c2.addEventListener("change",e=>{state.contactOk=e.target.checked;persist()});
+  priv.append(h("label",{class:"check",for:"contactOk"},[c2,h("span",{text:t.contactOk})]));
   f.append(priv);
 
   const hp=h("input",{type:"text",name:"website_confirm",id:"hp",tabindex:"-1",autocomplete:"off","aria-hidden":"true",style:"position:absolute;left:-9999px;width:1px;height:1px;opacity:0"});
@@ -247,6 +250,7 @@ function progress(){const a=Object.values(state.answers).filter(v=>v&&v.trim()).
 function setStatus(msg,cls){const s=$("#status");if(s){s.textContent=msg;s.className="status "+(cls||"")}}
 function check(){
   const t=T[lang];
+  if(!(state.meta.company||"").trim()){setStatus(t.needCompany,"err");$("#m_company").focus();return false}
   if(!state.consent){setStatus(t.needConsent,"err");$("#consent").focus();return false}
   return true;
 }
@@ -262,7 +266,9 @@ function row(){
   return {survey:p.survey,company:p.meta.company||null,contact_ok:p.contactOk,language:p.language,payload:p};
 }
 function asText(p){
-  const L=[`${T.en.title} / ${T.zh.title}`,`Submitted: ${p.submittedAt}`,""];
+  const L=[`${T.en.title} / ${T.zh.title}`,`Company: ${p.meta.company||""}`,`Website: ${p.meta.website||""}`,`Name: ${p.meta.name||""} · Role: ${p.meta.role||""}`];
+  if(p.contactOk)L.push(`Email: ${p.meta.email||""} · Phone: ${p.meta.phone||""}`);
+  L.push(`Contact OK: ${p.contactOk?"yes":"no"} · Submitted: ${p.submittedAt}`,"");
   for(const a of p.answers)L.push(`[${a.id}] ${a.question}`,a.answer,"");
   return L.join("\n");
 }

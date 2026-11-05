@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>答卷管理 · POS系统规划问卷</title>
+  <link rel="stylesheet" href="./admin.css">
+  <script src="./survey-config.js" defer></script>
+  <script src="./admin.mjs" type="module"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div><p class="eyebrow">POS SYSTEM PLANNING / RESPONSES</p>
+        <h1>调查答卷</h1><p class="subtitle">阅读合作伙伴的反馈，为下一步规划提供依据。</p></div>
+      <div class="account"><span class="badge">仅限授权管理员</span>
+        <button id="logout" type="button" hidden>退出登录</button></div>
+    </header>
+    <p id="status" role="status" aria-live="polite"></p>
+    <section id="login-panel" class="auth-card" aria-labelledby="login-title">
+      <p class="eyebrow">管理入口</p><h2 id="login-title">登录查看答卷</h2>
+      <p class="muted">请使用已授权的管理员账号。登录后还需完成身份验证。</p>
+      <form id="login-form">
+        <label for="email">邮箱</label>
+        <input id="email" type="email" autocomplete="username" required>
+        <label for="password">密码</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <button type="submit" class="primary">登录</button>
+      </form>
+      <p class="small">没有账号或忘记密码？请联系项目管理员在后台创建或恢复账号。</p>
+    </section>
+    <section id="mfa-panel" class="auth-card" aria-labelledby="mfa-title" hidden>
+      <p class="eyebrow">身份验证</p><h2 id="mfa-title">输入动态验证码</h2>
+      <p class="muted">打开身份验证器应用，输入当前的6位验证码。</p>
+      <div id="enrollment" class="notice" hidden>
+        <strong>首次使用：绑定身份验证器</strong>
+        <p>在身份验证器应用中选择手动添加账号，账号名称可填“POS答卷管理”，类型选择“基于时间”，输入下方密钥。</p>
+        <code id="setup-secret"></code>
+        <p class="small">此密钥仅用于本次绑定，请勿截图、转发或发给客服。</p>
+      </div>
+      <form id="mfa-form">
+        <label for="code">6位验证码</label>
+        <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code"
+          pattern="[0-9]{6}" maxlength="6" required>
+        <button type="submit" class="primary">验证并查看</button>
+      </form>
+    </section>
+    <section id="workspace" class="workspace" aria-label="答卷列表与详情" hidden>
+      <aside class="list-panel">
+        <div class="section-head"><h2>已提交答卷</h2><button id="refresh" type="button">刷新</button></div>
+        <p class="small">最新提交优先 · 每页20份</p>
+        <div id="response-list" aria-live="polite"></div>
+        <nav class="pagination" aria-label="答卷分页">
+          <button id="previous" type="button" disabled>上一页</button>
+          <span id="page-number">第1页</span>
+          <button id="next" type="button" disabled>下一页</button>
+        </nav>
+      </aside>
+      <article id="detail" class="detail-panel" aria-label="答卷详情" tabindex="-1">
+        <div class="empty"><h2>选择一份答卷</h2><p>从列表中选择，即可逐题查看回答。</p></div>
+      </article>
+    </section>
+    <footer>提交时间按新西兰时间显示 · 答卷仅供项目规划与合作沟通使用<br>
+      会话仅保留在当前页面内存中，刷新页面后需重新登录。</footer>
+    <noscript>此页面需要启用JavaScript，才能登录并读取答卷。</noscript>
+  </main>
+</body>
+</html>
