@@ -110,7 +110,7 @@ const T = {
       sendFail:"Sending failed. Please download your answers and email them to me instead.",
       copied:"Copied. Paste them into an email to me.", copyFail:"Copy failed. Use Download instead.",
       draft:"Your answers are saved in this browser until you submit.",
-      doneTitle:"Thank you", doneBody:"I will go through your answers and come back to you with next steps for working together.",
+      doneTitle:"Thank you", doneBody:"I will go through your answers and come back to you with next steps for working together. If you would like to add or change anything, you are welcome to answer again; I will read the latest answers together with the earlier ones.", again:"Answer again",
       footer:`POS system planning questionnaire · Questions: ${CONFIG.contactEmail}`},
   zh:{eyebrow:"奥克兰 · POS系统规划",
       title:"POS系统规划问卷",
@@ -135,7 +135,7 @@ const T = {
       sendFail:"提交失败。请下载答卷并通过邮件发给我。",
       copied:"已复制，请粘贴到邮件发给我。", copyFail:"复制失败，请使用下载。",
       draft:"提交前，您的回答会保存在本浏览器中。",
-      doneTitle:"谢谢", doneBody:"我会仔细阅读您的回答，并就下一步合作安排与您联系。",
+      doneTitle:"谢谢", doneBody:"我会仔细阅读您的回答，并就下一步合作安排与您联系。如果您想补充或修改，欢迎重新答卷；我会把最新的回答和之前的一起阅读。", again:"重新答卷",
       footer:`POS系统规划问卷 · 联系：${CONFIG.contactEmail}`}
 };
 
@@ -203,7 +203,10 @@ function render(){
   $("#eyebrow").textContent=t.eyebrow;$("#title").textContent=t.title;$("#lead").textContent=t.lead;$("#footer").textContent=t.footer;
   document.title=t.title;
   const f=$("#form");f.innerHTML="";
-  if(state.submitted){f.append(h("div",{class:"done"},[h("h2",{text:t.doneTitle}),h("p",{text:t.doneBody})]));$("#progress").textContent="";return}
+  if(state.submitted){
+    const again=h("button",{type:"button",class:"primary",id:"againBtn",text:t.again});
+    again.addEventListener("click",()=>{state={meta:{company:"SHOPTECH"},answers:{},consent:false,contactOk:false};persist();render();window.scrollTo(0,0)});
+    f.append(h("div",{class:"done"},[h("h2",{text:t.doneTitle}),h("p",{text:t.doneBody}),again]));$("#progress").textContent="";return}
 
 
   const about=h("section",{},[h("h2",{},[h("span",{class:"n",text:"00"}),t.about])]);
