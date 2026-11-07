@@ -39,6 +39,7 @@ h2{font-family:var(--f-display);font-size:1.2rem;margin:0;display:flex;gap:10px;
 h2 .n{font-family:var(--f-mono);font-size:.8rem;color:var(--accent)}
 .q{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .q label{font-weight:500}
+.q .qn{font-family:var(--f-mono);font-size:.85em;color:var(--accent);margin-right:.5em}
 .hint{font-size:.85rem;color:var(--muted);margin-top:-4px}
 .opt{font-size:.8rem;color:var(--muted);font-weight:400}
 textarea,input[type=text],input[type=email]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
@@ -221,12 +222,13 @@ function render(){
   }
   about.append(g);f.append(about);
 
+  let qn=0;
   SECTIONS.forEach((s,si)=>{
     const sec=h("section",{id:s.id},[h("h2",{},[h("span",{class:"n",text:String(si+1).padStart(2,"0")}),s[lang]])]);
     s.qs.forEach(q=>{
       const id="a_"+q.id;const ta=h("textarea",{id,name:id,rows:"3"});ta.value=state.answers[q.id]||"";
       ta.addEventListener("input",e=>{state.answers[q.id]=e.target.value;persist();progress()});
-      sec.append(h("div",{class:"q"},[h("label",{for:id,text:q[lang]}),ta]));
+      qn++;sec.append(h("div",{class:"q"},[h("label",{for:id},[h("span",{class:"qn",text:qn+"."}),q[lang]]),ta]));
     });
     f.append(sec);
   });
