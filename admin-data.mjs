@@ -2,20 +2,38 @@ import { SurveyError } from "./admin-http.mjs";
 const isObject = value => value !== null && typeof value === "object" && !Array.isArray(value);
 const text = value => typeof value === "string" && value.trim() ? value : "未填写";
 
+/**
+ * Show the question and section in the language the respondent used. Submissions store English text,
+ * so the Chinese text comes from the shared question bank by question id; if the id is unknown
+ * (or the bank is not loaded) fall back to what was stored.
+ */
+function localizedText(answer, language) {
+  const stored = { section: answer.section, question: answer.question };
+  const bank = globalThis.SURVEY_SECTIONS;
+  if (language !== "zh" || !Array.isArray(bank)) return stored;
+  for (const section of bank) {
+    const found = section.qs.find(question => question.id === answer.id);
+    if (found) return { section: section.zh, question: found.zh };
+  }
+  return stored;
+}
+
 /** Validate legacy data without treating submitted text as markup or guessing identity. */
 export function normalizeResponse(row) {
   if (!isObject(row) || !isObject(row.payload)) throw new SurveyError("INVALID_RESPONSE");
   const payload = row.payload;
   if (payload.answers !== undefined && !Array.isArray(payload.answers)) throw new SurveyError("INVALID_RESPONSE");
   const meta = isObject(payload.meta) ? payload.meta : {};
+  const language = row.language === "zh" || payload.language === "zh" ? "zh" : "en";
   const answers = (payload.answers ?? []).map(answer => {
     if (!isObject(answer) || typeof answer.answer !== "string") throw new SurveyError("INVALID_RESPONSE");
-    return { id: text(answer.id), section: text(answer.section),
-      question: text(answer.question), answer: answer.answer };
+    const shown = localizedText(answer, language);
+    return { id: text(answer.id), section: text(shown.section),
+      question: text(shown.question), answer: answer.answer };
   });
   return { id: text(row.id), company: text(row.company || meta.company),
     name: text(meta.name), role: text(meta.role), website: text(meta.website),
-    email: text(meta.email), phone: text(meta.phone), language: text(row.language),
+    email: text(meta.email), phone: text(meta.phone), language: text(row.language), displayLanguage: language,
     createdAt: row.created_at, contactOk: row.contact_ok === true, answers };
 }
 
