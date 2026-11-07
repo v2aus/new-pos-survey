@@ -55,6 +55,7 @@ button.primary{background:var(--accent);border-color:var(--accent);color:var(--s
 button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button:disabled{opacity:.5;cursor:not-allowed}
 .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.submit-panel{margin-top:28px}
 .status{font-size:.92rem}
 .status.err{color:var(--warn)} .status.ok{color:var(--ok)}
 .done{background:var(--surface);border:1px solid var(--ok);border-radius:8px;padding:20px}
@@ -248,7 +249,7 @@ function render(){
   const dl=h("button",{type:"button",id:"dlBtn",text:t.download,class:ONLINE?"":"primary"});
   const cp=h("button",{type:"button",id:"cpBtn",text:t.copy});
   acts.append(dl,cp);
-  f.append(h("section",{},[acts,status]));
+  f.append(h("section",{class:"submit-panel"},[acts,status]));
   dl.addEventListener("click",()=>{if(!check())return;download()});
   cp.addEventListener("click",()=>{if(!check())return;copy()});
   progress();
@@ -262,9 +263,11 @@ function check(){
   if(!state.consent){setStatus(t.needConsent,"err");$("#consent").focus();return false}
   return true;
 }
-function payload(){
-  const answers=[];
-  for(const s of SECTIONS)for(const q of s.qs){const v=(state.answers[q.id]||"").trim();if(v)answers.push({id:q.id,section:s.en,question:q.en,answer:v})}
+// qlang：题目和章节名用哪种语言。提交到数据库固定用英文（后台统一）；下载和复制用当前页面语言。
+// n 是页面上显示的题号（1 到 35），方便对照。
+function payload(qlang="en"){
+  const answers=[];let n=0;
+  for(const s of SECTIONS)for(const q of s.qs){n++;const v=(state.answers[q.id]||"").trim();if(v)answers.push({n,id:q.id,section:s[qlang],question:q[qlang],answer:v})}
   const meta=Object.fromEntries(Object.entries(state.meta).map(([k,v])=>[k,(v||"").trim()]));
   if(!state.contactOk){delete meta.email;delete meta.phone}
   return {survey:"retail-tech-partner-v1",submittedAt:new Date().toISOString(),language:lang,consent:true,contactOk:!!state.contactOk,meta,answers};
@@ -273,21 +276,27 @@ function row(){
   const p=payload();
   return {survey:p.survey,company:p.meta.company||null,contact_ok:p.contactOk,language:p.language,payload:p};
 }
+// 文字版答卷：标签、题目都用当前页面语言（lang）。
+const EXPORT_LABELS={
+  en:{company:"Company",website:"Website",name:"Name",role:"Role",email:"Email",phone:"Phone",contactOk:"Contact OK",yes:"yes",no:"no",submitted:"Submitted",sep:" · "},
+  zh:{company:"公司",website:"网站",name:"姓名",role:"职位",email:"邮箱",phone:"电话",contactOk:"可联系",yes:"是",no:"否",submitted:"提交时间",sep:" · "}
+};
 function asText(p){
-  const L=[`${T.en.title} / ${T.zh.title}`,`Company: ${p.meta.company||""}`,`Website: ${p.meta.website||""}`,`Name: ${p.meta.name||""} · Role: ${p.meta.role||""}`];
-  if(p.contactOk)L.push(`Email: ${p.meta.email||""} · Phone: ${p.meta.phone||""}`);
-  L.push(`Contact OK: ${p.contactOk?"yes":"no"} · Submitted: ${p.submittedAt}`,"");
-  for(const a of p.answers)L.push(`[${a.id}] ${a.question}`,a.answer,"");
+  const E=EXPORT_LABELS[lang],colon=lang==="zh"?"：":": ";
+  const L=[T[lang].title,`${E.company}${colon}${p.meta.company||""}`,`${E.website}${colon}${p.meta.website||""}`,`${E.name}${colon}${p.meta.name||""}${E.sep}${E.role}${colon}${p.meta.role||""}`];
+  if(p.contactOk)L.push(`${E.email}${colon}${p.meta.email||""}${E.sep}${E.phone}${colon}${p.meta.phone||""}`);
+  L.push(`${E.contactOk}${colon}${p.contactOk?E.yes:E.no}${E.sep}${E.submitted}${colon}${p.submittedAt}`,"");
+  for(const a of p.answers)L.push(`${a.n}. ${a.question}`,a.answer,"");
   return L.join("\n");
 }
 function download(){
-  const p=payload();const blob=new Blob([asText(p)+"\n\n---\n"+JSON.stringify(p,null,2)],{type:"text/plain;charset=utf-8"});
+  const p=payload(lang);const blob=new Blob([asText(p)+"\n\n---\n"+JSON.stringify(p,null,2)],{type:"text/plain;charset=utf-8"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);
   a.download=`survey-${(p.meta.company||"answers").replace(/[^\w-]+/g,"_")}.txt`;document.body.append(a);a.click();
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
 }
 async function copy(){
-  const t=T[lang],txt=asText(payload());
+  const t=T[lang],txt=asText(payload(lang));
   try{await navigator.clipboard.writeText(txt);setStatus(t.copied,"ok")}
   catch(e){const ta=document.createElement("textarea");ta.value=txt;document.body.append(ta);ta.select();
     try{document.execCommand("copy");setStatus(t.copied,"ok")}catch(_){setStatus(t.copyFail,"err")}ta.remove()}
