@@ -19,12 +19,13 @@ function localizedText(answer, language) {
 }
 
 /** Validate legacy data without treating submitted text as markup or guessing identity. */
-export function normalizeResponse(row) {
+export function normalizeResponse(row, languageOverride) {
   if (!isObject(row) || !isObject(row.payload)) throw new SurveyError("INVALID_RESPONSE");
   const payload = row.payload;
   if (payload.answers !== undefined && !Array.isArray(payload.answers)) throw new SurveyError("INVALID_RESPONSE");
   const meta = isObject(payload.meta) ? payload.meta : {};
-  const language = row.language === "zh" || payload.language === "zh" ? "zh" : "en";
+  const submitted = row.language === "zh" || payload.language === "zh" ? "zh" : "en";
+  const language = languageOverride === "zh" || languageOverride === "en" ? languageOverride : submitted;
   const answers = (payload.answers ?? []).map(answer => {
     if (!isObject(answer) || typeof answer.answer !== "string") throw new SurveyError("INVALID_RESPONSE");
     const shown = localizedText(answer, language);
@@ -33,7 +34,7 @@ export function normalizeResponse(row) {
   });
   return { id: text(row.id), company: text(row.company || meta.company),
     name: text(meta.name), role: text(meta.role), website: text(meta.website),
-    email: text(meta.email), phone: text(meta.phone), language: text(row.language), displayLanguage: language,
+    email: text(meta.email), phone: text(meta.phone), language: text(row.language), displayLanguage: language, submittedLanguage: submitted,
     createdAt: row.created_at, contactOk: row.contact_ok === true, answers };
 }
 

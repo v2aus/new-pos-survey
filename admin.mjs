@@ -55,7 +55,7 @@ async function loadDetail(id) {
   try {
     const raw = await client.detail(id);
     if (operation !== detailRevision || sessionRevision !== revision) return;
-    view.detail(raw); view.status("已打开答卷，题目按提交时的原文显示。");
+    view.detail(raw); view.status("已打开答卷，题目默认按对方提交时的语言显示，可在详情里切换。");
   } catch (error) {
     if (operation === detailRevision && sessionRevision === revision) fail(error);
   }
