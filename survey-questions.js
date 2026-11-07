@@ -13,13 +13,15 @@ globalThis.SURVEY_SECTIONS = [
   {id:"q7",en:"I saw the Shoptech × Moni 2026 winter package advertised at NZ$99 + GST a month over 36 months. Could you tell me whether it still applies, what equipment and services it includes, and what is charged separately? And how are other systems usually rented?",zh:"我看到贵公司与 Moni 合作的 2026 年冬季套餐标注为每月 NZ$99 + GST、租期 36 个月。方便介绍一下目前是否仍适用、包含哪些设备和服务、哪些费用另计吗？其他系统的租用方式又通常是怎样的？"},
   {id:"q7b",en:"If a shop would like to change POS while still within its rental term, what has worked in your experience (for example swapping the system, taking over the remaining payments, or waiting until the term ends)? There is no need to share any contract details.",zh:"如果有门店想在租期内更换POS，据您的经验有哪些做法可行（比如更换系统、承接剩余租金、等租期结束）？不需要透露任何合同细节。"},
   {id:"q8",en:"In your experience, what makes your clients choose a POS or decide to switch?",zh:"据您的经验，客户选择或更换POS，最主要是出于什么原因？"},
-  {id:"q9",en:"Which problems with current systems tend to take up most of your support time?",zh:"现有系统的哪些问题，通常最占用您的售后时间？"}]},
+  {id:"q9",en:"Which problems with current systems tend to take up most of your support time?",zh:"现有系统的哪些问题，通常最占用您的售后时间？"},
+  {id:"q32",en:"Have you come across clients who use Aimer? As far as you know, what made them choose it?",zh:"您有遇到过使用 Aimer 的客户吗？据您了解，他们选择 Aimer 主要是因为什么？"}]},
  {id:"s3",en:"Hardware and supply",zh:"硬件与供货",qs:[
   {id:"q10",en:"Roughly what share of your clients' counters use Android all-in-one terminals, iPads or Windows touchscreens?",zh:"您客户的收银台大致有多少用安卓一体机、iPad、Windows 触摸屏？"},
   {id:"q11",en:"Which terminal brands (such as iMin, Sunmi, Elo or Posiflex) do you like to install, and what do you like about them?",zh:"您比较愿意安装哪些一体机品牌（如 iMin、商米、Elo、Posiflex）？它们好在哪里？"},
   {id:"q12",en:"Only if you are comfortable sharing: what price ranges should I keep in mind for an all-in-one terminal, kitchen printer, label printer, cash drawer and EFTPOS terminal for our pilot shops?",zh:"如果您方便分享：为试点门店配置一体机、厨房打印机、标签机、钱箱和 EFTPOS 机，各项我大概应该按怎样的价格区间来规划？"},
   {id:"q13",en:"Which parts fail most often, and how do you usually handle warranty, swaps and spare units?",zh:"哪些部件最常出问题？保修、换机和备用机一般是怎么处理的？"},
-  {id:"q14",en:"For cup and item labels, which printers and label sizes have worked well for you?",zh:"杯贴和商品标签方面，哪些打印机和标签尺寸用起来比较好？"}]},
+  {id:"q14",en:"For cup and item labels, which printers and label sizes have worked well for you?",zh:"杯贴和商品标签方面，哪些打印机和标签尺寸用起来比较好？"},
+  {id:"q33",en:"Apart from all-in-one terminals, have any of your clients mentioned wanting to run the POS on a phone, a tablet or a web browser? If so, what kind of shops and what situations?",zh:"除了一体机，您的客户有没有提过想用手机、平板或网页版来收银？如果有，大概是哪类门店、什么场景？"}]},
  {id:"s4",en:"Payment terminals",zh:"支付终端",qs:[
   {id:"q15",en:"Which payment providers and terminals do your clients use (for example Windcave, Worldline, Verifone or Smartpay)?",zh:"您的客户用哪些支付服务商和终端（比如 Windcave、Worldline、Verifone、Smartpay）？"},
   {id:"q16",en:"Roughly what share of your clients have card payments connected to the POS, and what keeps the others from connecting?",zh:"大约多少客户的刷卡已经和POS集成？其余的没集成，主要是什么原因？"},
@@ -38,7 +40,12 @@ globalThis.SURVEY_SECTIONS = [
   {id:"q24b",en:"For these shops, which features would you like us to get right first?",zh:"针对这些门店，您希望我们的系统优先做好哪些功能？"},
   {id:"q25",en:"The core features I am planning are integrated card payments on Android terminals, one label per cup, bilingual Chinese/English, careful handling when a card payment result is unclear, and local on-site support. How would you rank them for your clients, and is anything missing?",zh:"我计划的核心功能是：安卓一体机集成刷卡、每杯一张杯贴、中英双语、刷卡结果不明时的稳妥处理，以及本地上门支持。就您的客户而言，您会怎样给它们排序？还有什么遗漏吗？"},
   {id:"q26",en:"I am thinking of offering the system as a rental covering both hardware and software, similar to current business rentals. Do your clients tend to prefer renting or buying outright, and what would make our rental attractive to them?",zh:"我打算以租用方式提供（含硬件和软件），与现有 business rental 类似。您的客户更倾向租还是直接购买？怎样的租用方案会更吸引他们？"},
-  {id:"q27",en:"What would help you feel confident installing and recommending the system (for example training, documentation, test units or a direct support line)?",zh:"要让您放心地安装和推荐这套系统，哪些支持会有帮助（比如培训、资料、测试机、直接的技术支持渠道）？"}]},
+  {id:"q27",en:"What would help you feel confident installing and recommending the system (for example training, documentation, test units or a direct support line)?",zh:"要让您放心地安装和推荐这套系统，哪些支持会有帮助（比如培训、资料、测试机、直接的技术支持渠道）？"},
+  {id:"q34",en:"Which of these do your clients ask about most often: self-order kiosks, QR table ordering, kitchen display screens, delivery platform integration (such as Uber Eats or DoorDash), or Xero?",zh:"自助点餐机、扫码点餐、厨房显示屏、外卖平台接入（如 Uber Eats、DoorDash）、Xero 对账，这几项里您的客户最常问到哪些？"},
+  {id:"q35",en:"If you don't mind sharing your view: for a bubble tea or quick-service shop, roughly what monthly price (including the all-in-one terminal, software, installation and after-sales support) would clients find easy to accept?",zh:"方便的话，想听听您的看法：对一家奶茶店或快餐店来说，每月大约多少钱（含一体机、软件、安装和售后）客户会比较容易接受？"}]},
+ {id:"s7b",en:"AI support and finding customers",zh:"AI客服与获客",qs:[
+  {id:"q36",en:"If we offered an AI support assistant, which after-sales questions do you think it could answer first (for example how-to guidance or common faults), and which would still need a person?",zh:"如果有 AI 客服，您觉得售后里哪些问题比较适合先让它回答（比如操作指引、常见故障）？哪些仍然必须由人来处理？"},
+  {id:"q37",en:"Where do your clients mainly find new customers at the moment (for example Facebook ads, Google or word of mouth), and what kind of marketing help would they be willing to pay for?",zh:"目前您的客户主要通过哪些渠道获客（比如 Facebook 广告、Google、口碑）？他们会愿意为哪类营销服务付费？"}]},
  {id:"s8",en:"How we work together",zh:"合作方式",qs:[
   {id:"q28",en:"I would love to work together on on-site installation and first-line support. How would you imagine dividing the work between us, and what kind of fees (per install or per month) would feel fair to you?",zh:"我很希望能和您一起承担现场安装和一线售后。您觉得我们怎样分工比较合适？按次或按月怎样收费，您会觉得合理？"},
   {id:"q29",en:"For referrals or resale, what arrangement would feel comfortable for you (a one-off fee, a share of the monthly fee, or something else)?",zh:"关于客户推荐或代理，您觉得怎样的安排比较合适（一次性费用、月费分成，或其他方式）？"},
