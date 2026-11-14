@@ -18,6 +18,25 @@ function localizedText(answer, language) {
   return stored;
 }
 
+/**
+ * The number the question had on the page the respondent saw. Submissions store it as `n`; an older
+ * submission without a usable `n` falls back to the question's position in the shared bank, or to no
+ * number when the id is unknown. The id is not shown: it is stable on purpose and does not follow the order.
+ */
+function questionNumber(answer) {
+  if (Number.isSafeInteger(answer.n) && answer.n > 0) return answer.n;
+  const bank = globalThis.SURVEY_SECTIONS;
+  if (!Array.isArray(bank)) return null;
+  let position = 0;
+  for (const section of bank) {
+    for (const question of section.qs) {
+      position += 1;
+      if (question.id === answer.id) return position;
+    }
+  }
+  return null;
+}
+
 /** Validate legacy data without treating submitted text as markup or guessing identity. */
 export function normalizeResponse(row, languageOverride) {
   if (!isObject(row) || !isObject(row.payload)) throw new SurveyError("INVALID_RESPONSE");
@@ -29,7 +48,7 @@ export function normalizeResponse(row, languageOverride) {
   const answers = (payload.answers ?? []).map(answer => {
     if (!isObject(answer) || typeof answer.answer !== "string") throw new SurveyError("INVALID_RESPONSE");
     const shown = localizedText(answer, language);
-    return { id: text(answer.id), section: text(shown.section),
+    return { id: text(answer.id), number: questionNumber(answer), section: text(shown.section),
       question: text(shown.question), answer: answer.answer };
   });
   return { id: text(row.id), company: text(row.company || meta.company),

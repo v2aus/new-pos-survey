@@ -86,7 +86,8 @@ class AdminView {
     if (!response.answers.length) panel.append(element("p", "此答卷没有已回答的问题。", "muted"));
     for (const answer of response.answers) {
       const section = element("section", undefined, "answer");
-      section.append(element("small", answer.id + " · " + answer.section),
+      const number = answer.number === null ? "" : "第 " + answer.number + " 题 · ";
+      section.append(element("small", number + answer.section),
         element("h3", answer.question), element("p", answer.answer));
       panel.append(section);
     }
